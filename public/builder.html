@@ -1,0 +1,1634 @@
+<template id="landingpageBuilderComponent">
+
+	<div id="landingpage-builder-wrapper">
+
+		<nav class="builder-nav navbar navbar-expand-lg navbar-light bg-light"
+			 style="border-bottom: 1px solid #c7ced5;">
+
+			<span @click="backFromBuilder($event)" class="" title="Back" style="
+    display: inline-block;
+    padding: 0px 16px 0px 6px;
+    border-right: 1px solid #ddd;
+    margin-right: 10px;cursor: pointer;
+"><i class="fa fa-long-arrow-left" style="
+    font-size: 33px;
+"></i></span>
+
+			<a class="navbar-brand" href="#">
+				<img src="error.png" onerror="parent.getBrandTextLogo()" width="auto" height="28"
+					 class="d-inline-block align-top" alt="">
+			</a>
+
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+					aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<div v-tinymce-editor1 style="height:1px;width:1px;overflow: hidden;">LP</div>
+
+				<ul class="builder-device-view navbar-nav m-auto">
+					<li class="device desktop" :class="{active : activeViewport == 'desktop'}"
+						@click="changeViewportDesign($event, 'desktop')">
+						<div>
+							<i class="fa fa-desktop"></i>
+						</div>
+					</li>
+					<li class="device mobile" :class="{active : activeViewport == 'mobile'}"
+						@click="changeViewportDesign($event, 'mobile')">
+						<div>
+							<i class="fa fa-mobile"></i>
+						</div>
+					</li>
+				</ul>
+
+				<ul class="navbar-nav ml-auto">
+
+					<!-- <li class="nav-item">
+      	<a class="btn btn-outline-warning mr-2 btn-sm" href="#" @click="previewLandingpage($event)" title="Preview"><i class="fa fa-eye"></i></a>
+      </li> -->
+					<li class="nav-item">
+						<a class="btn btn-warning mr-2 btn-sm" :class="{'disabled' : saveInProgress}" href="#"
+						   @click="saveLandingPage($event)">Save</a>
+					</li>
+
+				</ul>
+			</div>
+		</nav>
+
+
+		<builder-html-content :prefs="landingpagePrefs"></builder-html-content>
+
+		<div class="row builder no-gutters">
+
+			<div class="builder-card-nav col p-0">
+
+				<div>
+
+					<ul class="nav-list">
+
+						<li>
+							<a
+							   :class="{active: builderPreferencesActiveTab == 'contents' && navOptionDetailedView}"
+							   @click="activatePreferencesTab($event, 'contents')">
+								<span class="icon"><i aria-hidden="true" class="fa fa-building-o"></i></span>
+								<span class="title">Content</span></a>
+						</li>
+
+						<!-- <li>
+			    <a href="#" :class="{active: builderPreferencesActiveTab == 'designed_components' && navOptionDetailedView}" @click="activatePreferencesTab($event, 'designed_components')">
+			    <span class="icon"><i aria-hidden="true" class="fa fa-magic"></i></span>
+			    <span class="title">Blocks</span></a>
+			  </li>
+			  
+			   <li>
+			    <a :class="{active: builderPreferencesActiveTab == 'sections' && navOptionDetailedView}" @click="activatePreferencesTab($event, 'sections')" href="#">
+			    <span class="icon"><i aria-hidden="true" class="material-icons">view_module</i></span>
+			    <span class="title">Sections</span>
+			    </a>
+			  </li>
+			   -->
+
+						<li>
+							<a
+							   :class="{active: builderPreferencesActiveTab == 'body' && navOptionDetailedView}"
+							   @click="activatePreferencesTab($event, 'body')">
+								<span class="icon"><i aria-hidden="true" class="fa fa-cog"></i></span>
+								<span class="title">Settings</span></a>
+						</li>
+
+						<li>
+							<a
+							   :class="{active: builderPreferencesActiveTab == 'themes' && navOptionDetailedView}"
+							   @click="activatePreferencesTab($event, 'themes')">
+								<span class="icon"><i aria-hidden="true" class="fa fa-puzzle-piece"></i></span>
+								<span class="title">Themes</span></a>
+						</li>
+
+					</ul>
+
+				</div>
+
+			</div>
+
+			<div :class="{'hidden-view': !navOptionDetailedView || builderPreferencesActiveTab == '', 'body-settings' : builderPreferencesActiveTab == 'body', 'designed-components' : builderPreferencesActiveTab == 'designed_components'}"
+				 class="builder-card">
+
+				<div class="builder-card-content">
+
+					<div :class="{hide: builderPreferencesActiveTab != 'contents'}">
+
+						<div class="close-builder-card pb-sm-3">
+							<span class="font-weight-bold align-middle text-muted" style="  font-size: 14px; ">&nbsp;
+							</span>
+							<span class="float-right" @click="closesettingsBlock($event)"><i
+									class="fa fa-close"></i></span>
+						</div>
+
+						<draggable :list="sectionComponents"
+								   :options="{group: { name: 'section', pull: 'clone', put: false }, sort: false,ghostClass:'section-sortable-ghost', dragClass: 'drag-element'}"
+								   @start="onOptionsDragStart" @end="onOptionsDragEnd" :clone="draggedCloneSection"
+								   element="ul" class="builder-block-list-options block" ref="elements">
+
+							<div class="block-panel" v-for="section in sectionComponents">
+
+								<div class="builder-block-row sortable-ghost-section" data-name="Drop it here">
+									<div class="row m-0">
+										<div class="blockbuilder-column p-0 text-center pt-2 col">
+											{{section.text}}
+										</div>
+
+									</div>
+								</div>
+
+							</div>
+
+						</draggable>
+
+						<draggable :list="contents"
+								   :options="{group: { name: 'content', pull: 'clone', put: false }, sort: false,ghostClass:'content-sortable-ghost', dragClass: 'drag-element'}"
+								   @start="onOptionsDragStart" :clone="draggedCloneContent" element="ul"
+								   class="builder-card-content-list" ref="contents">
+
+							<li v-for="content in contents" data-name="Drop it here" :data-type="content.type"
+								drag-handle=".list-content" data-helper="clone" class="sortable-ghost-li"
+								drag-start="closesettingsBlock">
+								<div class="list-content sortable-ghost-content" data-name="Drop it here">
+									<div><i class="fa" :class="'fa-'+content.icon" :style="content.iconStyle"></i></div>
+									<div>{{content.primary_head}}</div>
+								</div>
+							</li>
+
+
+						</draggable>
+
+						<!-- <ul :list="contents"
+						:clone="draggedClone" element="ul" class="builder-card-content-list"
+						@start="onOptionsDragStart"
+						ref="contents">
+					<li v-draggable v-for="content in contents" :data-type="content.type" drag-handle=".list-content" data-helper="clone" class="ebcontent" drag-start="closesettingsBlock">
+						<div class="list-content sortable-ghost-content" data-name="Drop it here">
+							<div><i class="fa" :class="'fa-'+content.icon" :style="content.iconStyle"
+								></i></div>
+							<div>{{content.primary_head}}</div>
+						</div>
+					</li>
+					</ul> -->
+
+					</div>
+
+					<div :class="{hide: builderPreferencesActiveTab != 'sections'}">
+
+
+						<div class="close-builder-card pb-sm-3">
+							<span class="font-weight-bold align-middle text-muted" style="  font-size: 14px; ">&nbsp;
+							</span>
+							<span class="float-right" @click="closesettingsBlock($event)"><i
+									class="fa fa-close"></i></span>
+						</div>
+
+						<draggable :list="sectionComponents"
+								   :options="{group: { name: 'section', pull: 'clone', put: false }, sort: false,ghostClass:'section-sortable-ghost', dragClass: 'drag-element'}"
+								   @start="onOptionsDragStart" :clone="draggedCloneSection" element="div"
+								   class="builder-block-list-options block" ref="elements">
+
+							<div class="block-panel" v-for="element in sectionComponents">
+
+								<div class="builder-block-row sortable-ghost-section" data-name="Drop it here">
+									<div class="row m-0">
+										<div v-for="columnOption in defaultOptions[element.type]"
+											 class="blockbuilder-column p-0 col-md-12">
+											<div class="blockbuilder-column-content"></div>
+										</div>
+
+									</div>
+								</div>
+
+							</div>
+
+						</draggable>
+
+					</div>
+
+					<div :class="{hide: builderPreferencesActiveTab != 'body'}">
+
+						<div class="close-builder-card pb-sm-3">
+							<span class="font-weight-bold align-middle text-muted" style="  font-size: 14px; ">Page
+								Settings&nbsp; </span>
+							<span class="float-right" @click="closesettingsBlock($event)"><i
+									class="fa fa-close"></i></span>
+						</div>
+
+						<form action="#" onsubmit="return false">
+
+							<style-edit-form-fields
+									:themesettings="landingpagePrefs.bodySettings.themeSettings"
+									:options="landingpagePrefs.bodySettings" :globals="globals"
+													:editelementtype="'body'"></style-edit-form-fields>
+
+						</form>
+
+					</div>
+
+					<div :class="{hide: builderPreferencesActiveTab != 'designed_components'}">
+
+
+						<div class="close-builder-card pb-sm-3">
+							<span class="font-weight-bold align-middle text-muted" style="  font-size: 14px; ">&nbsp;
+							</span>
+							<span class="float-right" @click="closesettingsBlock($event)"><i
+									class="fa fa-close"></i></span>
+						</div>
+
+						<div class="form-group">
+							<select v-model="selectedDesignedComponentType" class="form-control eb-form-control">
+								<option value="all">All</option>
+								<option v-for="(componentList, key, index) in globals.designed_components" :value="key">
+									{{key}}</option>
+							</select>
+						</div>
+
+						<div
+								v-for="componentList in getSelectedDesignedComponents(globals.designed_components, selectedDesignedComponentType)">
+
+							<draggable :list="componentList"
+									   :options="{group: { name: 'section', pull: 'clone', put: false }, sort: false,ghostClass:'section-sortable-ghost', dragClass: 'drag-element'}"
+									   @start="onOptionsDragStart" @end="onOptionsDragEnd" :clone="draggedDesignedComponent"
+									   element="div" class="builder-block-list-options block" ref="componentList">
+
+								<div class="block-panel" v-for="component in componentList">
+
+									<div class="sortable-ghost-section" data-name="Drop it here">
+
+										<div class="row m-0">
+											<div class="blockbuilder-column col-md-12 p-0">
+												<div class="blockbuilder-column-content">
+
+													<img :src="component.image_url" width="100%" height="auto">
+
+												</div>
+
+											</div>
+
+										</div>
+
+									</div>
+
+								</div>
+
+							</draggable>
+
+						</div>
+
+					</div>
+
+					<div :class="{hide: builderPreferencesActiveTab != 'themes'}">
+						<div class="close-builder-card pb-sm-3">
+							<span class="font-weight-bold align-middle text-muted" style="  font-size: 14px; ">Select
+								Theme&nbsp; </span>
+							<span class="float-right" @click="closesettingsBlock($event)"><i
+									class="fa fa-close"></i></span>
+						</div>
+
+						<form action="#" onsubmit="return false">
+
+
+
+							<div class="text-center mb-3">
+								<img class="cursor-pointer" width="100%" height="auto" :src="window.baseUrl + '/static/img/preview.png'"
+									 @click="selectedTheme.active='theme1'" class="cursor-pointer" :style="{'border' : (selectedTheme.active=='theme1') ? '2px solid blue' : '1px solid #ddd'}"/>
+							</div>
+
+							<div class="text-center mb-3">
+								<img class="cursor-pointer" width="100%" height="auto" :src="window.baseUrl + '/static/img/preview-02.jpg'"
+									 @click="selectedTheme.active='theme2'" class="cursor-pointer" :style="{'border' : (selectedTheme.active=='theme2') ? '2px solid blue' : '1px solid #ddd'}"/>
+							</div>
+
+							<div class="text-center mb-3">
+								<img class="cursor-pointer" width="100%" height="auto" :src="window.baseUrl + '/static/img/preview.jpg-01.jpg'"
+									 @click="selectedTheme.active='theme3'" class="cursor-pointer" :style="{'border' : (selectedTheme.active=='theme3') ? '2px solid blue' : '1px solid #ddd'}"/>
+							</div>
+
+
+
+
+
+
+						</form>
+
+					</div>
+
+
+
+				</div>
+
+
+			</div>
+
+			<div class="col overflow-auto p-0">
+
+				<div class="container-fluid p-0">
+
+					<div class="row no-gutters">
+
+						<div class="col-lg-12">
+
+							<div class="landingpage-builder-content">
+
+
+								<div id="tinymceToolbarContainer">
+
+								</div>
+
+								<div class="build-area" :class="[activeViewport+'-view']">
+
+									<div class="scroll-container"
+										 :style="getSelectedStyles( landingpagePrefs.bodySettings, {width : (activeViewport == 'mobile') ? '500px' : '100%'}, ['background-color', 'font'])">
+
+										<div style=""
+											 :style="{marginTop: landingpagePrefs.bodySettings.margin.top+'px'}">
+
+
+											<draggable class="section-container"
+													   :class="[{empty: !landingpagePrefs.sections.length}, getFontFamilyClassName(landingpagePrefs.bodySettings.font)]"
+													   data-empty-template="No section here. Drag section from right."
+													   :list="landingpagePrefs.sections"
+													   :options="{group: {name: 'section', put: true}, sort: true, handle: 'i.actions.section-move'}"
+													   @add="onAddSection" @start="onMove" @end="onMoveEnd"
+													   ref="emailElements">
+
+												<div class="section-element" :data-hover="section.hovered"
+													 :class="{hovered: section.hovered, selected: activeElementId == section.id}"
+													 v-for="(section, sectionIndex) in landingpagePrefs.sections"
+													 :id="section.id"
+													 :style="getSelectedStyles(section.options, {}, ['background', 'border', 'box-shadow', 'margin'])"
+													 @mouseleave="mouseOutSection($event, section)"
+													 @mouseenter="mouseEnterSection($event, section)">
+
+													<section-video-background
+															v-if="section.options.background.type == 'video' && section.options.background.video.url"
+															:renderby="'builder'" :video="section.options.background.video">
+													</section-video-background>
+
+													<div class="add-new-section-container">
+														<span class=""
+															  @click="addNewSection($event, sectionIndex)">&#x2B;</span>
+													</div>
+
+													<div class="section-element-actions"
+														 :class="{active : activeElementId == section.id}">
+
+														<!-- 						 <span v-if="section.options.name">{{section.options.name}}</span> -->
+														<span class="pl-1"> Section {{sectionIndex+1}}</span>
+
+														<i class="other-actions fa fa-pencil" title="Edit"
+														   @click="activateSelectedElement($event, section, 'section')"></i>
+
+
+														<i v-if="section.type!='collection_section'"
+														   class="other-actions delete fa fa-trash"
+														   title="Delete Block"
+														   @click="removeSection($event, section)"></i>
+
+														<i v-if="section.type!='collection_section'"
+														   class="other-actions clone fa fa-clone" title="Clone Block"
+														   @click="cloneSection($event, section)"></i>
+
+														<i v-if="sectionIndex != 0"
+														   class="other-actions clone fa fa-long-arrow-up"
+														   title="Move Up"
+														   @click="moveSection($event, section, sectionIndex, sectionIndex - 1)"></i>
+
+														<i v-if="(landingpagePrefs.sections.length - 1) != sectionIndex"
+														   class="other-actions clone fa fa-long-arrow-down"
+														   title="Move Down"
+														   @click="moveSection($event, section, sectionIndex, sectionIndex + 1)"></i>
+
+													</div>
+
+													<template v-if="section.type=='collection_section'">
+
+														<div :class="[getContainerClass(landingpagePrefs.bodySettings.contentWidth)]"
+															 @click="activateSelectedElement($event, section, 'section')"
+															 :style="getSelectedStyles(section.options, {}, ['padding'])">
+															<collection-list
+																	v-if="accordion.active == 'list' && landingpagePrefs.bodyContent !== ''"
+																	:font="landingpagePrefs.bodySettings.font"
+																	:landingpageprefs="landingpagePrefs"
+															>
+															</collection-list>
+															<landingpagePrefs.bodySettings.themeSettings.collectionListStyle
+																	v-else-if="accordion.active == 'list'"
+																	:is="landingpagePrefs.bodySettings.themeSettings.collectionListStyle"
+																	:font="landingpagePrefs.bodySettings.font"
+															>
+															</landingpagePrefs.bodySettings.themeSettings.collectionListStyle>
+															<collection-comp
+																	:font="landingpagePrefs.bodySettings.font"
+																	:bodycontent="landingpagePrefs.bodyContent"
+																	:collectionpagestyle="landingpagePrefs.bodySettings.themeSettings.collectionPageStyle"
+																	v-if="accordion.active == 'collection'"
+															>
+
+															</collection-comp>
+															<article-comp
+																	:font="landingpagePrefs.bodySettings.font"
+																	:bodycontent="landingpagePrefs.bodyContent"
+																	v-if="accordion.active == 'article'"
+																	:articlepagestyle="landingpagePrefs.bodySettings.themeSettings.articlePageStyle"
+															>
+
+															</article-comp>
+
+
+														</div>
+
+<!--														<div class="article-section-overlay" style="">-->
+<!--															<div class="row" style="height: 100%;">-->
+<!--																<div class="col align-self-center text-center">Article-->
+<!--																	Section</div>-->
+<!--															</div>-->
+<!--														</div>-->
+
+													</template>
+
+
+													<div v-else
+														 :class="[getContainerClass(landingpagePrefs.bodySettings.contentWidth)]"
+														 :style="getSelectedStyles(section.options, {}, ['padding'])">
+
+														<row-column :viewport="activeViewport"
+																	:columns="section.columns">
+
+														</row-column>
+
+													</div>
+
+												</div>
+												<!-- End of section element -->
+
+											</draggable>
+											<!-- End of section container -->
+
+										</div>
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+
+			<div class="builder-element-setting col-2"
+				 :class="{'setting-tab-minimized' : minimizedElementSettingsContainer}">
+
+				<div v-if="activeSettingsElement && activeSettingsElement.id" style="width: 253px;">
+
+					<ul class="lp-tabs">
+
+						<li class="lp-tab">
+
+							<a href="javascript:void(0);" data-tab="editElementSettings">
+								Element Settings
+							</a>
+
+							<!-- <a @click="minimizedElementSettingsContainer=false" v-if="minimizedElementSettingsContainer"  href="javascript:void(0);" data-tab="editElementSettings">
+					<span class="fa fa-indent cursor-pointer" style="padding-right:5px;"></span> Element Settings 
+				</a>
+				<a v-else @click="minimizedElementSettingsContainer=true,deactivateSettingElement()"  href="javascript:void(0);" data-tab="editElementSettings">
+					<span class="fa fa-outdent cursor-pointer" style="padding-right:5px;"></span> Element Settings
+				</a> -->
+
+						</li>
+
+
+						<!-- <li class="lp-tab" :class="{active: builderPreferencesActiveTab == 'element'}" @click="activatePreferencesTab($event, 'element')">
+				<a href="javascript:void(0);" data-tab="editElementSettings">
+				
+				<span class="fa fa-cog" style="display:block;"></span>
+				
+				
+				</a></li>  -->
+
+					</ul>
+
+					<div class="lp-tab-content-container">
+
+						<div class="lp-tab-content active">
+
+							<div>
+
+								<style-edit-form-fields :viewport="activeViewport"
+														:accordion="accordion"
+														:font="landingpagePrefs.bodySettings.font"
+														:themesettings="landingpagePrefs.bodySettings.themeSettings"
+														:options="activeSettingsElement.options"
+														:editelementtype="activeSettingsElement.elementType"
+														:element="activeSettingsElement" :elementid="activeSettingsElement.id"
+														:contenttype="activeSettingsElement.type" :elementid="activeSettingsElement.id">
+								</style-edit-form-fields>
+
+								<div v-if="activeSettingsElement.elementType =='section' && activeSettingsElement.type != 'collection_section' && checkHasContents(activeSettingsElement) "
+									 class="block-properities active" v-toggle-style-actions>
+
+									<div class="properity-header">
+										<i class="fa fa-angle-down expand"></i>
+										<i class="fa fa-angle-right contract"></i>
+										Contents
+									</div>
+
+									<div class="properity-body">
+
+										<div class="section-content-brief-settings">
+											<div v-for="(content, index) in activeSettingsElement.columns[0].contents"
+												 class="content-brief" :class="{selected:activeElementId == content.id}"
+												 @click="activeElementId=content.id">
+												<i class="fa content-icon"
+												   :class="'fa-'+getcontentInfoFromContentObject(content, 'icon')"
+												   :style="getcontentInfoFromContentObject(content, 'iconStyle')"></i>
+												{{getcontentInfoFromContentObject(content, 'primary_head')}}
+												<i class="fa fa-edit content-options"
+												   @click="activateSelectedElement($event, content.id, 'content'),activateSettingsElement($event, content, 'content')">
+												</i>
+												<i class="fa fa-trash content-options"
+												   @click="removeContent($event, activeSettingsElement.columns[0], content)"></i>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+
+					</div>
+
+
+					<!-- <div class="mb-3">
+	<span class="font-weight-bold align-middle text-muted" style="  font-size: 14px; ">Settings</span>
+	<span class="close-settings" @click="deactivateSettingElement($event)"><i class="fa fa-close"></i></span></div>
+	 -->
+
+				</div>
+
+				<div v-else>
+					<div class="row align-items-center" style="
+    height: calc(100vh - 60px);
+    background: #f6f6f6;
+				">
+						<div class="col">
+							<div style="font-size: 16px;text-align: center;padding-right: 12px;padding-left: 12px;">
+								Select one element to edit its appearance</div>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+
+
+			<b-modal v-model="modalPopup.showModal" size="xl">
+
+				<template v-slot:modal-title>
+					<span style="font-size:20px;">{{modalPopup.heading}}</span>
+				</template>
+
+				<template fluid>
+
+					<div v-if="modalPopup.modalType == 'fontAwesomeSelectIcon'">
+
+						<fa-icon-library :option="modalPopup.modalData"></fa-icon-library>
+
+					</div>
+
+					<div v-if="modalPopup.modalType == 'columnConfirmation'">
+
+						<div class="row">
+							<div class="col m-3">
+								<div @click="modalPopup.modalData['columns'] = 1,OnSelectModalPopUp()"
+									 class="row row-col-container">
+									<div v-for="ind in 1" class="col row-col-structure"></div>
+								</div>
+							</div>
+							<div class="col m-3">
+								<div @click="modalPopup.modalData.columns = 2,OnSelectModalPopUp()"
+									 class="row row-col-container">
+									<div v-for="ind in 2" class="col row-col-structure"></div>
+								</div>
+							</div>
+							<div class="col m-3">
+								<div @click="modalPopup.modalData['columns'] = 3,OnSelectModalPopUp()"
+									 class="row row-col-container">
+									<div v-for="ind in 3" class="col row-col-structure"></div>
+								</div>
+							</div>
+							<div class="col m-3">
+								<div @click="modalPopup.modalData['columns'] = 4,OnSelectModalPopUp()"
+									 class="row row-col-container">
+									<div v-for="ind in 4" class="col row-col-structure"></div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col m-3">
+								<div @click="modalPopup.modalData['columns'] = 5,OnSelectModalPopUp()"
+									 class="row row-col-container">
+									<div v-for="ind in 5" class="col row-col-structure"></div>
+								</div>
+							</div>
+							<div class="col m-3">
+								<div @click="modalPopup.modalData['columns'] = 6,OnSelectModalPopUp()"
+									 class="row row-col-container">
+									<div v-for="ind in 6" class="col row-col-structure"></div>
+								</div>
+							</div>
+							<div class="col m-3">
+								<div @click="modalPopup.modalData['columns'] = 8,OnSelectModalPopUp()"
+									 class="row row-col-container">
+									<div v-for="ind in 8" class="col row-col-structure"></div>
+								</div>
+							</div>
+							<div class="col m-3">
+								<div @click="modalPopup.modalData['columns'] = 10,OnSelectModalPopUp()"
+									 class="row row-col-container">
+									<div v-for="ind in 10" class="col row-col-structure"></div>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+
+		</div>
+	</div>
+
+</template>
+
+<template v-slot:modal-footer>
+	<div>
+		<span class="btn btn-outline-warning mr-2 btn-sm modal-close" @click="modalPopup.showModal = false">Close</span>
+		<span class="btn btn-warning mr-2 btn-sm" @click="OnSelectModalPopUp()">Okay</span>
+	</div>
+</template>
+
+</b-modal>
+
+
+
+</div>
+
+</template>
+
+
+<template id="secctionVideoBackgroundTemplate">
+
+	<div>
+
+		<div style="
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    object-fit: cover;
+    z-index: 0;
+    background: #000;
+"></div>
+
+
+		<video v-if="renderby=='builder' && video.type == 'engagebay' " class="section-background-video" muted loop>
+			<source :src="video.url" :type="getVideoType(video.url)">
+			Your browser does not support HTML5 video.
+		</video>
+		<video v-else-if="video.type == 'engagebay'" class="section-background-video" muted loop autoplay>
+			<source :src="video.url" :type="getVideoType(video.url)">
+			Your browser does not support HTML5 video.
+		</video>
+
+
+		<iframe class="section-background-video" :src="getIframeVideoSrcURL()"
+				v-if=" video.type == 'youtube' || video.type == 'vimeo' " frameborder="0" allow="autoplay; encrypted-media">
+
+		</iframe>
+
+	</div>
+
+</template>
+
+<template id="collectionList">
+	<div :class="landingpageprefs.bodySettings.themeSettings.collectionListStyle + '-style'" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px', '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }" v-html="landingpageprefs.bodyContent" v-prevent-nav>
+	</div>
+</template>
+
+<template id="list">
+	<div class="list-style">
+		<div class="body-container">
+			<div class="container width-xs">
+
+				<div class="m-0 p-0 row">
+					<div class="col-md">
+
+					</div>
+					<div class="col-md-10">
+
+						<div class="collection-list">
+
+							 <a class="each-collection">
+
+								<div class="row">
+									<div class="col image-container align-self-center">
+										<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-01.svg" width="100%" height="auto">
+									</div>
+									<div class="col">
+										<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Account Settings</div>
+										<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">
+											Set up add data to your Engagebay account to quickly get started.</div>
+
+										<div class="mt-3 display-table">
+											<div class="display-table-cell align-middle author-profile-image-continer">
+
+
+												<img class="author-profile-image" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" height="32" width="32">
+
+
+
+											</div>
+											<div class="display-table-cell align-middle" style="padding-left: 10px;">
+												<div class="font-size-13 text-muted">1 articles in this collection</div>
+												<div class="font-size-13 text-muted">
+													Written by Mike Charles
+												</div>
+
+											</div>
+
+										</div>
+									</div>
+								</div>
+
+							</a>
+							<a class="each-collection">
+
+								<div class="row">
+									<div class="col image-container align-self-center">
+										<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-05.svg" width="100%" height="auto">
+									</div>
+									<div class="col">
+										<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Features</div>
+										<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Browse through the features that could make your team more productive.</div>
+
+										<div class="mt-3 display-table">
+											<div class="display-table-cell align-middle author-profile-image-continer">
+
+
+												<img class="author-profile-image" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" height="32" width="32">
+
+
+
+											</div>
+											<div class="display-table-cell align-middle" style="padding-left: 10px;">
+												<div class="font-size-13 text-muted">2 articles in this collection</div>
+												<div class="font-size-13 text-muted">
+													Written by Roy
+												</div>
+
+											</div>
+
+										</div>
+									</div>
+								</div>
+
+							</a>
+						</div>
+
+					</div>
+					<div class="col-md">
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="cards">
+	<div class="cards-style">
+	<div class="body-container">
+		<div class="container-md">
+
+			<div class="collection-list row">
+
+				<div class="col-md-4 mb-3">
+					<a class="each-collection">
+						<div class="row">
+							<div class="col image-container align-self-top">
+								<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-01.svg" width="100%" height="auto">
+							</div>
+							<div class="col">
+								<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Account Settings</div>
+								<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Set up add data to your Engagebay account to quickly get started.</div>
+
+								<div class="mt-2 display-table">
+									<div class="display-table-cell author-profile-image-continer">
+
+
+										<img class="author-profile-image" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" height="32" width="32">
+
+
+
+									</div>
+									<div class="display-table-cell align-middle" style="padding-left: 10px;">
+										<div class="font-size-13 text-muted">1 articles in this collection</div>
+										<div class="font-size-13 text-muted">
+											Written by Mike Charles
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+					</a>
+
+
+
+				</div>
+				<div class="col-md-4 mb-3">
+					<a class="each-collection">
+						<div class="row">
+							<div class="col image-container align-self-top">
+								<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-05.svg" width="100%" height="auto">
+							</div>
+							<div class="col">
+								<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Features</div>
+								<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Browse through the features that could make your team more productive.</div>
+
+								<div class="mt-3 display-table">
+									<div class="display-table-cell author-profile-image-continer">
+
+
+										<img class="author-profile-image" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" height="32" width="32">
+
+
+
+									</div>
+									<div class="display-table-cell align-middle" style="padding-left: 10px;">
+										<div class="font-size-13 text-muted">2 articles in this collection</div>
+										<div class="font-size-13 text-muted">
+											Written by Roy
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+					</a>
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</template>
+
+<template id="minimal">
+	<div class="minimal-style">
+	<div class="body-container">
+		<div class="container-md">
+
+			<div class="collection-list row">
+
+				<div class="col-md-4 mb-3">
+					<a class="each-collection">
+
+						<div class="row">
+							<div class="col image-container align-self-start">
+								<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-01.svg" width="100%" height="auto">
+							</div>
+							<div class="col">
+								<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Account Settings</div>
+								<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Set up add data to your Engagebay account to quickly get started.</div>
+
+								<div class="mt-2 display-table">
+
+									<div class="display-table-cell author-profile-image-continer">
+
+
+										<img class="author-profile-image" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" height="32" width="32">
+
+
+
+									</div>
+									<div class="display-table-cell align-middle" style="padding-left: 10px;">
+										<div class="font-size-13 text-muted">1 articles in this collection</div>
+										<div class="font-size-13 text-muted">
+											Written by Mike Charles
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-4 mb-3">
+					<a class="each-collection">
+
+						<div class="row">
+							<div class="col image-container align-self-top">
+								<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-05.svg" width="100%" height="auto">
+							</div>
+							<div class="col">
+								<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Features</div>
+								<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Browse through the features that could make your team more productive.</div>
+
+								<div class="mt-3 display-table">
+
+									<div class="display-table-cell author-profile-image-continer">
+
+
+										<img class="author-profile-image" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" height="32" width="32">
+
+
+
+									</div>
+									<div class="display-table-cell align-middle" style="padding-left: 10px;">
+										<div class="font-size-13 text-muted">2 articles in this collection</div>
+										<div class="font-size-13 text-muted">
+											Written by Roy
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	</div>
+</template>
+
+<template id="tiles">
+	<div class="tiles-style">
+	<div class="body-container">
+		<div class="container width-xs">
+
+			<div class="collection-list row">
+				<div class="col-md-4 mb-3">
+
+					<a class="each-collection">
+						<div class=" image-container align-self-top">
+							<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-01.svg" width="100%" height="auto">
+						</div>
+						<div class="">
+							<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Account Settings</div>
+							<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Set up add data to your Engagebay account to quickly get started.</div>
+
+
+						</div>
+					</a>
+
+				</div>
+				<div class="col-md-4 mb-3">
+
+					<a class="each-collection">
+						<div class=" image-container align-self-top">
+							<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-05.svg" width="100%" height="auto">
+						</div>
+						<div class="">
+							<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Features</div>
+							<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Browse through the features that could make your team more productive.</div>
+
+
+						</div>
+					</a>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+	</div>
+</template>
+
+<template id="box">
+	<div class="box-style">
+	<div class="body-container">
+
+		<div class="container-md width-xs">
+
+			<div class="collection-list row">
+
+				<div class="col-md-4 mb-3">
+					<a class="new each-collection">
+						<div class="new-each-collection-body">
+							<div class="new-each-collection-svg">
+								<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-01.svg"
+									 width="100%" style="height: 28px;width: 28px;">
+							</div>
+							<div>
+								<div class="collection-title hc-global-title mb-1"
+									 :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Account Settings</div>
+								<div class="display-table">
+									<div class="display-table-cell align-middle author-profile-image-continer">
+
+
+										<img class="author-profile-image" height="32" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" width="32">
+
+
+
+
+									</div>
+
+									<div class="display-table-cell align-middle" style="padding-left: 10px;">
+										<div class="font-size-13 text-muted">1 articles in
+											this collection
+										</div>
+										<div class="font-size-13 text-muted">
+											Written by Mike Charles
+										</div>
+
+									</div>
+
+
+
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-4 mb-3">
+					<a class="new each-collection">
+						<div class="new-each-collection-body">
+							<div class="new-each-collection-svg">
+								<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-05.svg"
+									 width="100%" style="height: 28px;width: 28px;">
+							</div>
+							<div>
+								<div class="collection-title hc-global-title mb-1"
+									 :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Features</div>
+								<div class="display-table">
+									<div class="display-table-cell align-middle author-profile-image-continer">
+
+
+										<img class="author-profile-image" height="32" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" width="32">
+
+
+
+
+									</div>
+
+									<div class="display-table-cell align-middle" style="padding-left: 10px;">
+										<div class="font-size-13 text-muted">2 articles in
+											this collection
+										</div>
+										<div class="font-size-13 text-muted">
+											Written by Roy
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	</div>
+</template>
+
+<template id="collection">
+	<div class="builder-collection" v-if="bodycontent != ''" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px', '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px', '--heading-color': font.headingColor, '--heading-size': font.headingSize + 'px' }" v-html="bodycontent" v-prevent-nav></div>
+	<div v-else class="body-container builder-collection">
+
+		<div class="container width-xs">
+			<div class="row">
+				<div class="col-md">
+
+				</div>
+
+				<div class="col-md-10">
+					<div class="hc-breadcrum-navigation ml-2">
+						<a>All</a>
+
+						<i class="fa fa-chevron-right"></i>
+						<span>Getting started</span>
+					</div>
+					<div class="collection-view">
+						<div class="collection-header py-3">
+							<div class="row collection-details">
+								<div class="col image-container align-self-center">
+									<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-01.svg" width="100%" height="auto">
+								</div>
+								<div class="col gx-0">
+									<div class="collection-title hc-global-heading" :style="{ '--heading-color': font.headingColor, '--heading-size': font.headingSize + 'px' }">Getting started</div>
+									<div class="collection-description hc-global-description py-2 " v-if="collectionpagestyle['contentDescVisibility']" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Engagebay is a simple yet powerful CRM solution designed to help businesses track leads, manage contacts, automate sales tasks, and grow customer relationships.
+									</div>
+									<div class="display-table">
+										<div class="display-table-cell align-middle author-profile-image-continer d-flex">
+
+											<img class="author-profile-image" height="32" src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/avatar/avatar-new.png" width="32">
+
+										</div>
+
+										<div class="display-table-cell align-middle" style="padding-left: 10px;">
+											<div class="font-size-13 text-muted">5 articles in
+												this collection
+											</div>
+											<div class="font-size-13 text-muted">
+												Written by Roy
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="section-list new-ui mb-4">
+
+							<div class="each-section" style="border: 1px solid #ddd; margin-bottom:8px; padding: 10px; border-radius: 8px">
+								<div class="article-list">
+									<a class="each-article" >
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<div class="article-title-view truncate">**Comprendre la Politique de Remboursement</div>
+												<div class="article-description-view truncate" v-if="collectionpagestyle['contentDescVisibility']">Comprendre la Politique de Remboursement</div>
+
+
+											</div>
+											<div style="font-size: 8px; color: #1a1a1a">
+												<i class="fa fa-chevron-right"></i>
+											</div>
+										</div>
+
+									</a>
+								</div>
+								<div class="article-list">
+									<a class="each-article" >
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<div class="article-title-view truncate">See what KnowledgeBase can do for you</div>
+												<div class="article-description-view truncate" v-if="collectionpagestyle['contentDescVisibility']">See what KnowledgeBase can do for you</div>
+
+
+											</div>
+											<div style="font-size: 8px; color: #1a1a1a">
+												<i class="fa fa-chevron-right"></i>
+											</div>
+										</div>
+
+									</a>
+								</div>
+								<div class="article-list">
+									<a class="each-article" >
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<div class="article-title-view truncate">Step 1: Create &amp; publish articles</div>
+												<div class="article-description-view truncate" v-if="collectionpagestyle['contentDescVisibility']">Step 1: Create &amp; publish articles</div>
+
+
+											</div>
+											<div style="font-size: 8px; color: #1a1a1a">
+												<i class="fa fa-chevron-right"></i>
+											</div>
+										</div>
+
+									</a>
+								</div>
+								<div class="article-list">
+									<a class="each-article" >
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<div class="article-title-view truncate">Step 2: Launch your Help Center</div>
+												<div class="article-description-view truncate" v-if="collectionpagestyle['contentDescVisibility']">Step 2: Launch your Help Center</div>
+
+
+											</div>
+											<div style="font-size: 8px; color: #1a1a1a">
+												<i class="fa fa-chevron-right"></i>
+											</div>
+										</div>
+
+									</a>
+								</div>
+								<div class="article-list">
+									<a class="each-article" >
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<div class="article-title-view truncate">Step 3: Use articles in the chat</div>
+												<div class="article-description-view truncate" v-if="collectionpagestyle['contentDescVisibility']">Step 3: Use articles in the chat</div>
+
+
+											</div>
+											<div style="font-size: 8px; color: #1a1a1a">
+												<i class="fa fa-chevron-right"></i>
+											</div>
+										</div>
+
+									</a>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="col-md">
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+</template>
+
+<template id="article">
+	<div class="builder-article" v-if="bodycontent != ''" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px', '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px', '--heading-color': font.headingColor, '--heading-size': font.headingSize + 'px' }" v-html="bodycontent" v-prevent-nav></div>
+	<div v-else class="body-container builder-article">
+
+		<div class="container width-xs">
+
+			<div class="row page-total-content">
+				<div class="col-md">
+				</div>
+				<div :class="[articlepagestyle['tableContentsVisibility'] ? 'col-md-8' : 'col-md-10']">
+					<div class="hc-breadcrum-navigation ml-2">
+						<a >All</a>
+						<i class="fa fa-chevron-right"></i>
+						<a >Getting started</a>
+						<i class="fa fa-chevron-right"></i> <span>Step 1: Create &amp; publish articles</span>
+
+					</div>
+
+					<div class="article-view p-4" style="border:none">
+
+						<div class="article-header">
+							<div class="article-title hc-global-heading new" :style="{ '--heading-color': font.headingColor, '--heading-size': font.headingSize + 'px' }">All</div>
+							<div class="article-description hc-global-description new-des" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Get started</div>
+							<div class="mt-2 display-table">
+								<div class="display-table-cell align-middle">
+									<img class="article-owner-image" height="30"
+										 src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" width="30"
+									/>
+								</div>
+								<div class="display-table-cell align-middle" style="padding-left: 10px;">
+									<div class="font-size-13 text-muted">Written by Roy</div>
+
+									<div class="font-size-13 text-muted">
+										Updated over
+										<span>2 days ago</span>
+
+									</div>
+
+									<div class="font-size-13 text-muted">
+										Created over
+										<span>4 day ago</span>
+
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+
+						<div class="article-body ">
+							Sample content for Step 1: Create &amp; publish articles
+						</div>
+
+						<div class="article-footer">
+							<div class="mb-2">Did this answer your question?</div>
+							<div class="article-react-container">
+								<img
+										class="m-1 cursor-pointer"
+										data-index="1"
+										src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/emojis/excellent.svg"
+										data-toggle="tooltip" data-placement="top"
+										title="Excellent"
+								>
+								<img
+										class="m-1 cursor-pointer"
+										data-index="2"
+										src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/emojis/satisfied.svg"
+										data-toggle="tooltip" data-placement="top"
+										title="Satisfied"
+								>
+								<img
+										class="m-1 cursor-pointer"
+										data-index="3"
+										src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/emojis/unsatisfied.svg"
+										data-toggle="tooltip" data-placement="top"
+										title="Unsatisfied"
+								>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+
+
+				<div class="col-md" v-if="articlepagestyle['tableContentsVisibility']">
+				<div v-if="articlepagestyle['tableContentsVisibility']" class="col-md-3 pt-5 list-content sticky">
+					<ul class="toc-list">
+
+						<li class="toc-item">
+							<a
+
+									class="list-title"
+							>
+								content 1
+							</a>
+						</li>
+						<li class="toc-item">
+							<a
+
+									class="list-title"
+							>
+								content 2
+							</a>
+						</li>
+						<li class="toc-item">
+							<a
+
+									class="list-title"
+							>
+								content 3
+							</a>
+						</li>
+
+					</ul>
+				</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+</template>
+
+<template id="rowColumnTemplate">
+
+	<div class="row column-container m-0 no-gutters" style="position:relative;">
+
+		<draggable v-for="column in columns" element="div" class="column-element content-container "
+				   v-bind:key="column.id"
+				   :class="['align-self-'+ column.alignItems, viewport == 'mobile' ? 'col-sm-12' : getColumnClassName(column), (checkAnyColumnHasContent(columns)) ? '' :'empty' ]"
+				   :list="column.contents"
+				   :options="{group: {name: 'content', put: true}, sort: true, handle: 'i.content-move'}" @start="onMove"
+				   @end="onMoveEnd" ref="column" @add="onAddContent($event, column)"
+				   :style="getSelectedStyles(column.options, {}, ['padding', 'margin', 'border', 'box-shadow', 'background'])">
+
+			<div class="content-element ebcontent ui-selected"
+				 :class="[{'selected': activeElementId() == content.id}, content.type+'-content']"
+				 v-for="(content, index) in column.contents" :id="content.id"
+				 @click="activateSelectedElement($event, content, 'content')"
+				 :style="getSelectedStyles(content.options, {}, ['padding', 'margin', 'background', 'box-shadow', 'border', 'font'])">
+
+				<div class="content-element-actions">
+
+					<span class="pl-1" v-html="getContentName(content.type)"></span>
+
+					<i class="other-actions fa fa-pencil" title="Edit"
+					   @click="activateSelectedElement($event, content, 'content')"></i>
+
+					<i class="other-actions content-drag-handle content-move fa fa-arrows" title="Move"></i>
+
+					<i class="other-actions delete fa fa-trash" title="Delete Content"
+					   @click="removeContent($event, column, content)"></i>
+
+					<i class="other-actions clone fa fa-clone" title="Clone Content"
+					   @click="cloneContent($event, column, content)"></i>
+
+				</div>
+
+				<!-- 												<div v-if="content.type != 'block'" class="content-move-actions"><i class="actions content-move fa fa-arrows"></i></div> -->
+
+				<component v-if="(viewport == 'desktop' && content.options.desktop.visible) || (viewport == 'mobile' && content.options.mobile.visible)" :content="content" :viewport="viewport" :is="content.component" :renderby="'builder'">
+				</component>
+				<div v-else
+					v-html="(viewport == 'mobile' && !content.options.mobile.visible)
+              ? `This element won't be displayed on mobile`
+              : (viewport == 'desktop' && !content.options.desktop.visible)
+                ? `This element won't be displayed on desktop`
+                : ''">
+				</div>
+
+			</div>
+
+
+		</draggable>
+
+	</div>
+
+</template>
+
+<style scoped>
+
+		.container {
+			width: 100%;
+			max-width: 960px;
+			padding-right: 15px;
+			padding-left: 15px;
+			margin-right: auto;
+			margin-left: auto;
+		}
+
+		/*.row {*/
+		/*	display: -ms-flexbox;*/
+		/*	display: flex;*/
+		/*	-ms-flex-wrap: wrap;*/
+		/*	flex-wrap: wrap;*/
+		/*	margin-right: -15px;*/
+		/*	margin-left: -15px;*/
+		/*}*/
+		/*.col-md {*/
+		/*	-ms-flex-preferred-size: 0;*/
+		/*	flex-basis: 0;*/
+		/*	-ms-flex-positive: 1;*/
+		/*	flex-grow: 1;*/
+		/*	max-width: 100%;*/
+		/*	position: relative;*/
+		/*	width: 100%;*/
+		/*	padding-right: 15px;*/
+		/*	padding-left: 15px;*/
+		/*}*/
+
+		/*.col-md-10 {*/
+		/*	-ms-flex: 0 0 83.333333%;*/
+		/*	flex: 0 0 83.333333%;*/
+		/*	max-width: 83.333333%;*/
+		/*	position: relative;*/
+		/*	width: 100%;*/
+		/*	padding-right: 15px;*/
+		/*	padding-left: 15px;*/
+		/*}*/
+
+		.tiles-style .collection-list, .list-style .collection-list, .cards-style .collection-list, .minimal-style .collection-list {
+			margin-top: 20px;
+			margin-bottom: 20px;
+		}
+
+		.list-style .collection-list .each-collection {
+			padding: 30px 10px;
+			background: #fff;
+			border-radius: 5px;
+			box-shadow: 0 0 10px #eaf0f6;
+			margin-bottom: 30px;
+			cursor: pointer;
+			transition: all .2s ease-in-out;
+		}
+
+		.cards-style .collection-list .each-collection .image-container {
+			flex: 0 0 18%;
+			max-width: 18%;
+			text-align: center;
+			padding-left: 7% !important;
+			padding-right: 4% !important;
+		}
+
+		.tiles-style .collection-list .each-collection {
+			padding: 20px 10px;
+			background: #fff;
+			border: 1px solid #f9f7f7;
+			border-radius: 5px;
+			box-shadow: 0 0 10px #eaf0f6;
+			cursor: pointer;
+			text-align: center;
+			height: 100%;
+			transition: all .2s ease-in-out;
+		}
+
+		.collection-view .collection-details .image-container {
+			flex: 0 0 18%;
+			max-width: 18%;
+			text-align: center;
+			padding-left: 7%;
+			padding-right: 4%;
+		}
+
+		.list-style .collection-list .each-collection .image-container {
+			flex: 0 0 18%;
+			max-width: 18%;
+			text-align: center;
+			padding-left: 7% !important;
+			padding-right: 4% !important;
+		}
+
+		.minimal-style .collection-list .each-collection .image-container {
+			flex: 0 0 18%;
+			max-width: 18%;
+			text-align: center;
+			padding-left: 7% !important;
+			padding-right: 4% !important;
+		}
+
+		.tiles-style .collection-list .each-collection .image-container img {
+			width: 65px;
+			height: auto;
+			margin-bottom: 20px;
+			margin-top: 10px;
+		}
+
+		.each-collection .col {
+			position: relative;
+			width: 100%;
+			padding-right: 15px !important;
+			padding-left: 15px !important;
+		}
+
+		.list-style .collection-list .each-collection .collection-title {
+			color:var(--title-color) !important;
+			margin-bottom: 5px;
+			font-size: var(--title-size) !important;
+		}
+
+		/*.author-profile-image-continer {*/
+		/*	padding-left: 5px;*/
+		/*	vertical-align: middle;*/
+		/*}*/
+
+		.cards-style .collection-list .each-collection {
+			padding: 20px;
+			background: #fff;
+			border: 1px solid #e0e0e0;
+			/* border-radius: 5px; */
+			/* box-shadow: 0 3px 8px 0 rgb(0 0 0 / 3%); */
+			margin-bottom: 30px;
+			/* margin-left: 10px; */
+			/* margin-right: 10px; */
+			cursor: pointer;
+			box-shadow: 0 0 10px #eaf0f6;
+			height: 100%;
+			transition: all .2s ease-in-out;
+			padding-bottom: 70px;
+			position: relative;
+		}
+
+		.minimal-style .collection-list .each-collection {
+			padding: 20px 10px;
+			/* background: #fff; */
+			/* border: 1px solid #e0e0e0; */
+			/* border-radius: 5px; */
+			/* box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.03); */
+			margin-bottom: 30px;
+			/*     margin-left: 10px; */
+			/*     margin-right: 10px; */
+			cursor: pointer;
+			height: 100%;
+			transition: all .2s ease-in-out;
+		}
+
+		.minimal-style .collection-list .each-collection:hover {
+			background: #fcfcfc;
+			box-shadow: 0 10px 15px -5px rgb(51 71 91 / 12%);
+			transform: scale(1.014);
+		}
+
+		.list-style .collection-list .each-collection:hover {
+			box-shadow: 0 10px 15px -5px rgb(51 71 91 / 12%);
+			transform: scale(1.009);
+		}
+
+		.hc-global-title {
+			color: var(--title-color) !important;
+			font-size: var(--title-size) !important;
+			font-weight: 600;
+		}
+
+		.hc-global-heading {
+			color: var(--heading-color) !important;
+			font-size: var(--heading-size) !important;
+			font-weight: 700 !important;
+		}
+
+		.hc-global-description {
+			color: var(--desc-color) !important;
+			font-size: var(--desc-size) !important;
+		}
+
+		.tiles-style .collection-list .each-collection .collection-title {
+			color: var(--title-color) !important;
+			margin-bottom: 10px;
+			font-size: var(--title-size) !important;
+			font-weight: 600;
+		}
+
+		.tiles-style a, .box-style a, .minimal-style a, .list-style a, .builder-article a, .builder-collection a{
+			cursor: inherit !important;
+		}
+	</style>

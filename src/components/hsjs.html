@@ -1,0 +1,763 @@
+<template v-slot:modal-footer>
+	<div>
+		<span class="btn btn-outline-warning mr-2 btn-sm modal-close" @click="modalPopup.showModal = false">Close</span>
+		<span class="btn btn-warning mr-2 btn-sm" @click="OnSelectModalPopUp()">Okay</span>
+	</div>
+</template>
+
+
+
+
+
+
+<template id="secctionVideoBackgroundTemplate">
+
+	<div>
+
+		<div style="
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    object-fit: cover;
+    z-index: 0;
+    background: #000;
+"></div>
+
+
+		<video v-if="renderby=='builder' && video.type == 'engagebay' " class="section-background-video" muted loop>
+			<source :src="video.url" :type="getVideoType(video.url)">
+			Your browser does not support HTML5 video.
+		</video>
+		<video v-else-if="video.type == 'engagebay'" class="section-background-video" muted loop autoplay>
+			<source :src="video.url" :type="getVideoType(video.url)">
+			Your browser does not support HTML5 video.
+		</video>
+
+
+		<iframe class="section-background-video" :src="getIframeVideoSrcURL()"
+				v-if=" video.type == 'youtube' || video.type == 'vimeo' " frameborder="0" allow="autoplay; encrypted-media">
+
+		</iframe>
+
+	</div>
+
+</template>
+
+<template id="collectionList">
+	<div :class="landingpageprefs.bodySettings.themeSettings.collectionListStyle + '-style'" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px', '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }" v-html="landingpageprefs.bodyContent" v-prevent-nav>
+	</div>
+</template>
+
+<template id="list">
+	<div class="list-style">
+		<div class="body-container">
+			<div class="container width-xs">
+
+				<div class="m-0 p-0 row">
+					<div class="col-md">
+
+					</div>
+					<div class="col-md-10">
+
+						<div class="collection-list">
+
+							 <a class="each-collection">
+
+								<div class="row">
+									<div class="col image-container align-self-center">
+										<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-01.svg" width="100%" height="auto">
+									</div>
+									<div class="col">
+										<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Account Settings</div>
+										<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">
+											Set up add data to your Engagebay account to quickly get started.</div>
+
+										<div class="mt-3 display-table">
+											<div class="display-table-cell align-middle author-profile-image-continer">
+
+
+												<img class="author-profile-image" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" height="32" width="32">
+
+
+
+											</div>
+											<div class="display-table-cell align-middle" style="padding-left: 10px;">
+												<div class="font-size-13 text-muted">1 articles in this collection</div>
+												<div class="font-size-13 text-muted">
+													Written by Mike Charles
+												</div>
+
+											</div>
+
+										</div>
+									</div>
+								</div>
+
+							</a>
+							<a class="each-collection">
+
+								<div class="row">
+									<div class="col image-container align-self-center">
+										<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-05.svg" width="100%" height="auto">
+									</div>
+									<div class="col">
+										<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Features</div>
+										<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Browse through the features that could make your team more productive.</div>
+
+										<div class="mt-3 display-table">
+											<div class="display-table-cell align-middle author-profile-image-continer">
+
+
+												<img class="author-profile-image" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" height="32" width="32">
+
+
+
+											</div>
+											<div class="display-table-cell align-middle" style="padding-left: 10px;">
+												<div class="font-size-13 text-muted">2 articles in this collection</div>
+												<div class="font-size-13 text-muted">
+													Written by Roy
+												</div>
+
+											</div>
+
+										</div>
+									</div>
+								</div>
+
+							</a>
+						</div>
+
+					</div>
+					<div class="col-md">
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="cards">
+	<div class="cards-style">
+	<div class="body-container">
+		<div class="container-md">
+
+			<div class="collection-list row">
+
+				<div class="col-md-4 mb-3">
+					<a class="each-collection">
+						<div class="row">
+							<div class="col image-container align-self-top">
+								<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-01.svg" width="100%" height="auto">
+							</div>
+							<div class="col">
+								<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Account Settings</div>
+								<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Set up add data to your Engagebay account to quickly get started.</div>
+
+								<div class="mt-2 display-table">
+									<div class="display-table-cell author-profile-image-continer">
+
+
+										<img class="author-profile-image" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" height="32" width="32">
+
+
+
+									</div>
+									<div class="display-table-cell align-middle" style="padding-left: 10px;">
+										<div class="font-size-13 text-muted">1 articles in this collection</div>
+										<div class="font-size-13 text-muted">
+											Written by Mike Charles
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+					</a>
+
+
+
+				</div>
+				<div class="col-md-4 mb-3">
+					<a class="each-collection">
+						<div class="row">
+							<div class="col image-container align-self-top">
+								<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-05.svg" width="100%" height="auto">
+							</div>
+							<div class="col">
+								<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Features</div>
+								<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Browse through the features that could make your team more productive.</div>
+
+								<div class="mt-3 display-table">
+									<div class="display-table-cell author-profile-image-continer">
+
+
+										<img class="author-profile-image" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" height="32" width="32">
+
+
+
+									</div>
+									<div class="display-table-cell align-middle" style="padding-left: 10px;">
+										<div class="font-size-13 text-muted">2 articles in this collection</div>
+										<div class="font-size-13 text-muted">
+											Written by Roy
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+					</a>
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</template>
+
+<template id="minimal">
+	<div class="minimal-style">
+	<div class="body-container">
+		<div class="container-md">
+
+			<div class="collection-list row">
+
+				<div class="col-md-4 mb-3">
+					<a class="each-collection">
+
+						<div class="row">
+							<div class="col image-container align-self-start">
+								<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-01.svg" width="100%" height="auto">
+							</div>
+							<div class="col">
+								<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Account Settings</div>
+								<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Set up add data to your Engagebay account to quickly get started.</div>
+
+								<div class="mt-2 display-table">
+
+									<div class="display-table-cell author-profile-image-continer">
+
+
+										<img class="author-profile-image" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" height="32" width="32">
+
+
+
+									</div>
+									<div class="display-table-cell align-middle" style="padding-left: 10px;">
+										<div class="font-size-13 text-muted">1 articles in this collection</div>
+										<div class="font-size-13 text-muted">
+											Written by Mike Charles
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-4 mb-3">
+					<a class="each-collection">
+
+						<div class="row">
+							<div class="col image-container align-self-top">
+								<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-05.svg" width="100%" height="auto">
+							</div>
+							<div class="col">
+								<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Features</div>
+								<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Browse through the features that could make your team more productive.</div>
+
+								<div class="mt-3 display-table">
+
+									<div class="display-table-cell author-profile-image-continer">
+
+
+										<img class="author-profile-image" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" height="32" width="32">
+
+
+
+									</div>
+									<div class="display-table-cell align-middle" style="padding-left: 10px;">
+										<div class="font-size-13 text-muted">2 articles in this collection</div>
+										<div class="font-size-13 text-muted">
+											Written by Roy
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	</div>
+</template>
+
+<template id="tiles">
+	<div class="tiles-style">
+	<div class="body-container">
+		<div class="container width-xs">
+
+			<div class="collection-list row">
+				<div class="col-md-4 mb-3">
+
+					<a class="each-collection">
+						<div class=" image-container align-self-top">
+							<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-01.svg" width="100%" height="auto">
+						</div>
+						<div class="">
+							<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Account Settings</div>
+							<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Set up add data to your Engagebay account to quickly get started.</div>
+
+
+						</div>
+					</a>
+
+				</div>
+				<div class="col-md-4 mb-3">
+
+					<a class="each-collection">
+						<div class=" image-container align-self-top">
+							<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-05.svg" width="100%" height="auto">
+						</div>
+						<div class="">
+							<div class="collection-title hc-global-title" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Features</div>
+							<div class="collection-description hc-global-description" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Browse through the features that could make your team more productive.</div>
+
+
+						</div>
+					</a>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+	</div>
+</template>
+
+<template id="box">
+	<div class="box-style">
+	<div class="body-container">
+
+		<div class="container-md width-xs">
+
+			<div class="collection-list row">
+
+				<div class="col-md-4 mb-3">
+					<a class="new each-collection">
+						<div class="new-each-collection-body">
+							<div class="new-each-collection-svg">
+								<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-01.svg"
+									 width="100%" style="height: 28px;width: 28px;">
+							</div>
+							<div>
+								<div class="collection-title hc-global-title mb-1"
+									 :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Account Settings</div>
+								<div class="display-table">
+									<div class="display-table-cell align-middle author-profile-image-continer">
+
+
+										<img class="author-profile-image" height="32" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" width="32">
+
+
+
+
+									</div>
+
+									<div class="display-table-cell align-middle" style="padding-left: 10px;">
+										<div class="font-size-13 text-muted">1 articles in
+											this collection
+										</div>
+										<div class="font-size-13 text-muted">
+											Written by Mike Charles
+										</div>
+
+									</div>
+
+
+
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-4 mb-3">
+					<a class="new each-collection">
+						<div class="new-each-collection-body">
+							<div class="new-each-collection-svg">
+								<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-05.svg"
+									 width="100%" style="height: 28px;width: 28px;">
+							</div>
+							<div>
+								<div class="collection-title hc-global-title mb-1"
+									 :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px' }">Features</div>
+								<div class="display-table">
+									<div class="display-table-cell align-middle author-profile-image-continer">
+
+
+										<img class="author-profile-image" height="32" src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" width="32">
+
+
+
+
+									</div>
+
+									<div class="display-table-cell align-middle" style="padding-left: 10px;">
+										<div class="font-size-13 text-muted">2 articles in
+											this collection
+										</div>
+										<div class="font-size-13 text-muted">
+											Written by Roy
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	</div>
+</template>
+
+<template id="collection">
+	<div class="builder-collection" v-if="bodycontent != ''" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px', '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px', '--heading-color': font.headingColor, '--heading-size': font.headingSize + 'px' }" v-html="bodycontent" v-prevent-nav></div>
+	<div v-else class="body-container builder-collection">
+
+		<div class="container width-xs">
+			<div class="row">
+				<div class="col-md">
+
+				</div>
+
+				<div class="col-md-10">
+					<div class="hc-breadcrum-navigation ml-2">
+						<a>All</a>
+
+						<i class="fa fa-chevron-right"></i>
+						<span>Getting started</span>
+					</div>
+					<div class="collection-view">
+						<div class="collection-header py-3">
+							<div class="row collection-details">
+								<div class="col image-container align-self-center">
+									<img src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/icons-v2/business_and_finance/business and finance-01.svg" width="100%" height="auto">
+								</div>
+								<div class="col gx-0">
+									<div class="collection-title hc-global-heading" :style="{ '--heading-color': font.headingColor, '--heading-size': font.headingSize + 'px' }">Getting started</div>
+									<div class="collection-description hc-global-description py-2 " v-if="collectionpagestyle['contentDescVisibility']" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Engagebay is a simple yet powerful CRM solution designed to help businesses track leads, manage contacts, automate sales tasks, and grow customer relationships.
+									</div>
+									<div class="display-table">
+										<div class="display-table-cell align-middle author-profile-image-continer d-flex">
+
+											<img class="author-profile-image" height="32" src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/avatar/avatar-new.png" width="32">
+
+										</div>
+
+										<div class="display-table-cell align-middle" style="padding-left: 10px;">
+											<div class="font-size-13 text-muted">5 articles in
+												this collection
+											</div>
+											<div class="font-size-13 text-muted">
+												Written by Roy
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="section-list new-ui mb-4">
+
+							<div class="each-section" style="border: 1px solid #ddd; margin-bottom:8px; padding: 10px; border-radius: 8px">
+								<div class="article-list">
+									<a class="each-article" >
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<div class="article-title-view truncate">**Comprendre la Politique de Remboursement</div>
+												<div class="article-description-view truncate" v-if="collectionpagestyle['contentDescVisibility']">Comprendre la Politique de Remboursement</div>
+
+
+											</div>
+											<div style="font-size: 8px; color: #1a1a1a">
+												<i class="fa fa-chevron-right"></i>
+											</div>
+										</div>
+
+									</a>
+								</div>
+								<div class="article-list">
+									<a class="each-article" >
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<div class="article-title-view truncate">See what KnowledgeBase can do for you</div>
+												<div class="article-description-view truncate" v-if="collectionpagestyle['contentDescVisibility']">See what KnowledgeBase can do for you</div>
+
+
+											</div>
+											<div style="font-size: 8px; color: #1a1a1a">
+												<i class="fa fa-chevron-right"></i>
+											</div>
+										</div>
+
+									</a>
+								</div>
+								<div class="article-list">
+									<a class="each-article" >
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<div class="article-title-view truncate">Step 1: Create &amp; publish articles</div>
+												<div class="article-description-view truncate" v-if="collectionpagestyle['contentDescVisibility']">Step 1: Create &amp; publish articles</div>
+
+
+											</div>
+											<div style="font-size: 8px; color: #1a1a1a">
+												<i class="fa fa-chevron-right"></i>
+											</div>
+										</div>
+
+									</a>
+								</div>
+								<div class="article-list">
+									<a class="each-article" >
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<div class="article-title-view truncate">Step 2: Launch your Help Center</div>
+												<div class="article-description-view truncate" v-if="collectionpagestyle['contentDescVisibility']">Step 2: Launch your Help Center</div>
+
+
+											</div>
+											<div style="font-size: 8px; color: #1a1a1a">
+												<i class="fa fa-chevron-right"></i>
+											</div>
+										</div>
+
+									</a>
+								</div>
+								<div class="article-list">
+									<a class="each-article" >
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<div class="article-title-view truncate">Step 3: Use articles in the chat</div>
+												<div class="article-description-view truncate" v-if="collectionpagestyle['contentDescVisibility']">Step 3: Use articles in the chat</div>
+
+
+											</div>
+											<div style="font-size: 8px; color: #1a1a1a">
+												<i class="fa fa-chevron-right"></i>
+											</div>
+										</div>
+
+									</a>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="col-md">
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+</template>
+
+<template id="article">
+	<div class="builder-article" v-if="bodycontent != ''" :style="{ '--title-color': font.titleColor, '--title-size': font.titleSize + 'px', '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px', '--heading-color': font.headingColor, '--heading-size': font.headingSize + 'px' }" v-html="bodycontent" v-prevent-nav></div>
+	<div v-else class="body-container builder-article">
+
+		<div class="container width-xs">
+
+			<div class="row page-total-content">
+				<div class="col-md">
+				</div>
+				<div :class="[articlepagestyle['tableContentsVisibility'] ? 'col-md-8' : 'col-md-10']">
+					<div class="hc-breadcrum-navigation ml-2">
+						<a >All</a>
+						<i class="fa fa-chevron-right"></i>
+						<a >Getting started</a>
+						<i class="fa fa-chevron-right"></i> <span>Step 1: Create &amp; publish articles</span>
+
+					</div>
+
+					<div class="article-view p-4" style="border:none">
+
+						<div class="article-header">
+							<div class="article-title hc-global-heading new" :style="{ '--heading-color': font.headingColor, '--heading-size': font.headingSize + 'px' }">All</div>
+							<div class="article-description hc-global-description new-des" :style="{ '--desc-color': font.descriptionColor, '--desc-size': font.descriptionSize + 'px' }">Get started</div>
+							<div class="mt-2 display-table">
+								<div class="display-table-cell align-middle">
+									<img class="article-owner-image" height="30"
+										 src="https://dashboardassets.eb-pages.com/uploads/4586680517394432/toppng_7___1_(1).png" width="30"
+									/>
+								</div>
+								<div class="display-table-cell align-middle" style="padding-left: 10px;">
+									<div class="font-size-13 text-muted">Written by Roy</div>
+
+									<div class="font-size-13 text-muted">
+										Updated over
+										<span>2 days ago</span>
+
+									</div>
+
+									<div class="font-size-13 text-muted">
+										Created over
+										<span>4 day ago</span>
+
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+
+						<div class="article-body ">
+							Sample content for Step 1: Create &amp; publish articles
+						</div>
+
+						<div class="article-footer">
+							<div class="mb-2">Did this answer your question?</div>
+							<div class="article-react-container">
+								<img
+										class="m-1 cursor-pointer"
+										data-index="1"
+										src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/emojis/excellent.svg"
+										data-toggle="tooltip" data-placement="top"
+										title="Excellent"
+								>
+								<img
+										class="m-1 cursor-pointer"
+										data-index="2"
+										src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/emojis/satisfied.svg"
+										data-toggle="tooltip" data-placement="top"
+										title="Satisfied"
+								>
+								<img
+										class="m-1 cursor-pointer"
+										data-index="3"
+										src="https://d2p078bqz5urf7.cloudfront.net/cloud/assets/img/kb/emojis/unsatisfied.svg"
+										data-toggle="tooltip" data-placement="top"
+										title="Unsatisfied"
+								>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+
+
+				<div class="col-md" v-if="articlepagestyle['tableContentsVisibility']">
+				<div v-if="articlepagestyle['tableContentsVisibility']" class="col-md-3 pt-5 list-content sticky">
+					<ul class="toc-list">
+
+						<li class="toc-item">
+							<a
+
+									class="list-title"
+							>
+								content 1
+							</a>
+						</li>
+						<li class="toc-item">
+							<a
+
+									class="list-title"
+							>
+								content 2
+							</a>
+						</li>
+						<li class="toc-item">
+							<a
+
+									class="list-title"
+							>
+								content 3
+							</a>
+						</li>
+
+					</ul>
+				</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+</template>
+
+<template id="rowColumnTemplate">
+
+	<div class="row column-container m-0 no-gutters" style="position:relative;">
+
+		<draggable v-for="column in columns" element="div" class="column-element content-container "
+				   v-bind:key="column.id"
+				   :class="['align-self-'+ column.alignItems, viewport == 'mobile' ? 'col-sm-12' : getColumnClassName(column), (checkAnyColumnHasContent(columns)) ? '' :'empty' ]"
+				   :list="column.contents"
+				   :options="{group: {name: 'content', put: true}, sort: true, handle: 'i.content-move'}" @start="onMove"
+				   @end="onMoveEnd" ref="column" @add="onAddContent($event, column)"
+				   :style="getSelectedStyles(column.options, {}, ['padding', 'margin', 'border', 'box-shadow', 'background'])">
+
+			<div class="content-element ebcontent ui-selected"
+				 :class="[{'selected': activeElementId() == content.id}, content.type+'-content']"
+				 v-for="(content, index) in column.contents" :id="content.id"
+				 @click="activateSelectedElement($event, content, 'content')"
+				 :style="getSelectedStyles(content.options, {}, ['padding', 'margin', 'background', 'box-shadow', 'border', 'font'])">
+
+				<div class="content-element-actions">
+
+					<span class="pl-1" v-html="getContentName(content.type)"></span>
+
+					<i class="other-actions fa fa-pencil" title="Edit"
+					   @click="activateSelectedElement($event, content, 'content')"></i>
+
+					<i class="other-actions content-drag-handle content-move fa fa-arrows" title="Move"></i>
+
+					<i class="other-actions delete fa fa-trash" title="Delete Content"
+					   @click="removeContent($event, column, content)"></i>
+
+					<i class="other-actions clone fa fa-clone" title="Clone Content"
+					   @click="cloneContent($event, column, content)"></i>
+
+				</div>
+
+				<!-- 												<div v-if="content.type != 'block'" class="content-move-actions"><i class="actions content-move fa fa-arrows"></i></div> -->
+
+				<component v-if="(viewport == 'desktop' && content.options.desktop.visible) || (viewport == 'mobile' && content.options.mobile.visible)" :content="content" :viewport="viewport" :is="content.component" :renderby="'builder'">
+				</component>
+				<div v-else
+					v-html="(viewport == 'mobile' && !content.options.mobile.visible)
+              ? `This element won't be displayed on mobile`
+              : (viewport == 'desktop' && !content.options.desktop.visible)
+                ? `This element won't be displayed on desktop`
+                : ''">
+				</div>
+
+			</div>
+
+
+		</draggable>
+
+	</div>
+
+</template>

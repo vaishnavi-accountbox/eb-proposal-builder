@@ -1,0 +1,927 @@
+<template id="stylePaddingTemplate">
+
+								<div v-if="padding" class="form-group">
+												<label v-if="!hideheading" class="sub-label">Inner Space</label>
+												
+												<div class="row" style="margin-bottom: 10px;">
+													<div class="col">
+														<label><small>Left</small></label>
+														<input min="0"  type="number" autofocus class="form-control eb-form-control"
+														v-model="padding['left']" v-input-field="'blur'"/>
+													</div>
+													<div class="col">
+														<label><small>Right</small></label>
+														<input min="0"  type="number" autofocus class="form-control eb-form-control"
+														v-model="padding['right']" v-input-field="'blur'"/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col">
+														<label><small>Top</small></label>
+														<input min="0"  type="number" autofocus class="form-control eb-form-control"
+														v-model="padding['top']" v-input-field="'blur'"/>
+													</div>
+													<div class="col">
+														<label><small>Bottom</small></label>
+														<input min="0"  type="number" autofocus class="form-control eb-form-control"
+														v-model="padding['bottom']" v-input-field="'blur'"/>
+													</div>
+												</div>
+												
+														
+											</div>
+											
+</template>
+
+<template id="styleMarginTemplate">
+
+								<div v-if="margin" class="form-group">
+												<label class="sub-label">Outer Space</label>
+												
+												<div class="row" style="margin-bottom: 10px;">
+													<div class="col">
+														<label><small>Left</small></label>
+														<input min="0"  type="number" autofocus class="form-control eb-form-control"
+														v-model="margin.left" v-input-field="'blur'"/>
+													</div>
+													<div class="col">
+														<label><small>Right</small></label>
+														<input min="0"  type="number" autofocus class="form-control eb-form-control"
+														v-model="margin['right']" v-input-field="'blur'"/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col">
+														<label><small>Top</small></label>
+														<input min="0"  type="number" autofocus class="form-control eb-form-control"
+														v-model="margin['top']" v-input-field="'blur'"/>
+													</div>
+													<div class="col">
+														<label><small>Bottom</small></label>
+														<input min="0"  type="number" autofocus class="form-control eb-form-control"
+														v-model="margin['bottom']" v-input-field="'blur'"/>
+													</div>
+												</div>
+												
+														
+											</div>
+											
+</template>
+
+<template id="styleBoxShadowTemplate">
+
+<div v-if="boxshadow">
+
+	<div class="custom-control custom-switch">
+							  <input v-model="boxshadow['enabled']" type="checkbox" class="custom-control-input" :id="'boxshadowSettings'+dummyid" v-input-field="'change'">
+							  <label class="custom-control-label" :for="'boxshadowSettings'+dummyid">Box Shadow</label>
+							</div>
+							
+							<div v-if="boxshadow['enabled']">
+							
+								<div class="form-group row">
+									<label class="col-sm-12 col-form-label">Horizontal Length</label> 
+									<div class="col-sm-12">
+										<input v-model="boxshadow['horizontalLength']" type="range" min="-10" max="10" v-input-field="'blur'"> 
+										<small class="">{{boxshadow['horizontalLength']}}px</small>
+									</div>
+								</div>
+								
+								<div class="form-group row">
+									<label class="col-sm-12 col-form-label">Vertical Length</label> 
+									<div class="col-sm-12">
+										<input v-model="boxshadow['verticalLength']" type="range" min="-10" max="10" v-input-field="'blur'"> 
+										<small class="">{{boxshadow['verticalLength']}}px</small>
+									</div>
+								</div>
+								
+								<div class="form-group row">
+									<label class="col-sm-12 col-form-label">Blur Radius</label> 
+									<div class="col-sm-12">
+										<input v-model="boxshadow['blurRadius']" type="range" min="0" max="50" v-input-field="'blur'"> 
+										<small class="">{{boxshadow['blurRadius']}}px</small>
+									</div>
+								</div>
+								
+								<div class="form-group row">
+									<label class="col-sm-12 col-form-label">Spread Radius</label> 
+									<div class="col-sm-12">
+										<input v-model="boxshadow['spreadRadius']" type="range" min="-50" max="50" v-input-field="'blur'"> 
+										<small class="">{{boxshadow['spreadRadius']}}px</small>
+									</div>
+								</div>
+								
+								<div class="form-group row">
+									<label class="col-sm-12 col-form-label">Shadow Color</label> 
+									<div class="col-sm-12">
+										<input type="text" data-alpha-enabled="true"  v-color-code="boxshadow['color']" v-input-field="'blur'"
+												v-model="boxshadow['color']" readonly class="color-picker form-control eb-form-control" />
+							
+									</div>
+								</div>
+							
+							</div>
+			</div>								
+</template>
+
+
+<template id="styleBackgroundTemplate">
+
+
+		<div>
+										<div class="form-group">
+								<label>Style</label>
+								<select class="form-control eb-form-control" v-model="background['type']" v-input-field="'blur'">
+									<option value="none">None</option>
+									<option value="solid">Solid Color</option>
+									<option value="solid_and_gradient">Solid color with gradient</option>
+									<option value="gradient">Gradient</option>
+									<option value="image">Image</option>
+									<option value="image_and_solid_color">Image with solid color</option>
+									<option value="image_and_gradient">Image with gradient</option>
+<!-- 								<option value="video">Video</option> -->
+								</select>
+						     </div>
+						     
+						     <div v-if="background['type'] == 'solid' || background['type'] == 'solid_and_gradient' || background['type'] == 'image_and_solid_color'" class="form-group">
+								<label>color</label>
+								<input type="text" data-alpha-enabled="true" data-transparent="true" v-color-code="background['color']" :style="{borderLeftColor:background['color']}" v-input-field="'blur'"
+												v-model="background['color']" readonly class="color-picker form-control eb-form-control" />
+						     </div>
+						     
+						     <div v-if="background['type'] == 'video'">
+						     
+						     		<div class="form-group">
+										<label>Video Link To</label>
+								   		<select class="form-control eb-form-control" id="link-to" v-input-field="'blur'"
+											v-model="background['video']['type']">
+											<option value="youtube">Youtube Video</option>
+											<option value="vimeo">Vimeo Video</option>
+											<option value="engagebay">EngageBay Video</option>
+		
+										</select>
+									</div>	
+							
+									<div v-if="background['video']['type'] === 'youtube' || background['video']['type'] === 'vimeo'" >
+									
+										<div class="form-group">
+											<label v-if="background['video']['type'] === 'youtube'" class="">Youtube video ID</label>
+											<label v-if="background['video']['type'] === 'vimeo'" class="">Vimeo video ID</label>
+											<input id="link" type="url" autofocus class="form-control eb-form-control" v-input-field="'blur'"
+													v-model="background['video']['url']" />
+										</div>
+									</div>
+									
+									<div v-if="background['video']['type'] == 'engagebay'" class="form-group">
+									
+										<engagebay-video-templates :videooptions="background['video']">
+											
+										</engagebay-video-templates>
+											
+									</div>
+						     
+						     </div>
+						     
+						     <div v-if="background['type'] == 'image' || background['type'] == 'image_and_solid_color' || background['type'] == 'image_and_gradient'">
+								
+								<div  class="form-group">
+									<label v-if="background['type'] == 'image'">Image</label>
+									<div class="d-flex">
+										<div v-if="background['image']['url']" style="width: 80px;padding: 10px">
+											<img :src="background['image']['url']" width="100%" height="auto" class="display-image" alt="" />
+										</div>
+										
+										<div class="flex-grow-1">
+										
+												<span class="btn btn-info btn-sm d-block mb-2" @click="showBgImageModal=true">Change Image </span>
+												<input type="text" class="form-control eb-form-control image-path" v-input-field="'blur'"
+														v-model="background['image']['url']" placeholder="Image URL"/>			
+												
+										</div>
+										
+										<div>
+										    <b-modal v-model="showBgImageModal" size="xl" ref="bgImageModalPopup">
+										  
+										  <template v-slot:modal-title>
+										      <span style="font-size:20px;">Choose Image</span>
+										    </template>
+										    
+										  	<b-container fluid>
+										  		
+										  		<repository-image-files :allowscaling="false" :option="background['image']" :fileurlkeyname="'url'" @closepopup="showBgImageModal=false"><repository-image-files>
+										  		
+										  	</b-container>
+										  	
+										  	 <template v-slot:modal-footer>
+										        <div>
+										        	<span class="btn btn-outline-warning mr-2 btn-sm modal-close" @click="showBgImageModal=false">Close</span>
+										        	<!-- <span class="btn btn-warning mr-2 btn-sm" @click="hideModal('bgImageModalPopup')">Okay</span>  -->
+										        </div>
+										      </template>
+										    
+										  </b-modal>
+										</div>
+										
+										<!-- Button trigger modal -->
+										
+										<!-- <div class="flex-grow-1">
+												<div v-input-file-upload class="upload-image-container">
+												
+													<div class="upload">
+														
+														<div class="upload-image">
+															<input id="backgroundImageUploading1" class="inputfile" type="file">
+															<label for="backgroundImageUploading1" class="btn btn-info btn-sm d-block">
+															
+															 Change Image <img class="uploading" style="display:none;" src="https://d2p078bqz5urf7.cloudfront.net/cloud/dev/assets/img/loader/facebook.gif"></label>
+															
+														</div>
+													</div>
+													<input type="text" class="form-control eb-form-control image-path"
+														v-model="background['image']['url']" placeholder="Image URL"/>
+											</div>
+										</div> -->
+									
+									</div>
+								</div>
+								
+								<div v-if="background['image']['url']">
+									
+										<div class="form-group">
+											<label>Repeat</label>
+											<select class="form-control eb-form-control text-capitalize" v-model="background['image']['repeat']" v-input-field="'blur'" >
+												<option value="no-repeat">No-Repeat</option>
+												<option value="repeat-x">Horizontal</option>
+												<option value="repeat-y">Vertical</option>
+												<option value="repeat">Both</option>
+											</select>
+									     </div>
+									     
+									     <div class="form-group">
+											<label>Parallax Effect</label> <select
+												 type="text" class="form-control eb-form-control text-capitalize" v-input-field="'blur'"
+												v-model="background['image']['attachment']" ><option value="scroll">Scroll</option><option value="fixed">Fixed</option></select>
+										</div>
+										
+										<div class="form-group">
+											<label>Adjustment</label>
+											<select type="text" class="form-control eb-form-control text-capitalize" v-model="background['image']['size']" v-input-field="'blur'">
+												<option value="auto">None</option>
+												<option value="cover">Fill</option>
+												<option value="contain">Fit</option>
+											</select>
+										</div>
+										
+										<div class="form-group">
+											<label>Position</label> 
+											<div class="background-image-position-orientation">
+												<div>
+													<span @click="updateImagePosition(background, 'left top')" :class="{active : background['image']['position'] == 'left top'}"  class="left-top"><i class="fa fa-arrow-up" style="transform: rotate(315deg);"></i></span>
+													<span @click="updateImagePosition(background, 'center top')" :class="{active : background['image']['position'] == 'center top'}" class="center-top"><i class="fa fa-arrow-up"></i></span>
+													<span @click="updateImagePosition(background, 'right top')" :class="{active : background['image']['position'] == 'right top'}" class="right-top"><i class="fa fa-arrow-up" style="transform: rotate(45deg);"></i></span>
+												</div>
+												<div>
+													    <span @click="updateImagePosition(background, 'left center')" :class="{active : background['image']['position'] == 'left center'}" class="left-center"><i style="transform: rotate(270deg);" class="fa fa-arrow-up"></i></span>
+														<span @click="updateImagePosition(background, 'center center')" :class="{active : background['image']['position'] == 'center center'}" class="center-center"><i class="fa fa-circle"></i></span>
+														<span @click="updateImagePosition(background, 'right center')" :class="{active : background['image']['position'] == 'right center'}" class="right-center"><i class="fa fa-arrow-up" style="transform: rotate(90deg);"></i></span>
+												</div>  
+												<div>
+													<span @click="updateImagePosition(background, 'left bottom')" :class="{active : background['image']['position'] == 'left bottom'}" class="left-bottom"><i class="fa fa-arrow-up" style="transform: rotate(225deg);"></i></span>
+													<span @click="updateImagePosition(background, 'center bottom')" :class="{active : background['image']['position'] == 'center bottom'}" class="center-bottom"><i class="fa fa-arrow-up" style="transform: rotate(180deg);"></i></span>
+													<span @click="updateImagePosition(background, 'right bottom')" :class="{active : background['image']['position'] == 'right bottom'}" class="right-bottom"><i class="fa fa-arrow-up" style="transform: rotate(135deg);"></i></span>
+												</div>
+											</div>
+											
+										</div>
+										
+								</div>
+								
+							</div>
+							
+							<div v-if="background['type'] == 'gradient'  || background['type'] == 'image_and_gradient' || background['type'] == 'solid_and_gradient'">
+												
+									<div class="form-group">
+										<label>Choose Orientation</label>
+										<div class="gradient-icon-orientation">
+											<span :class="{active : background['gradient']['orientation'] == 0}" @click="updateGradientOrientation(background, 0)"><i class="fa fa-arrow-up" style="transform: rotate(0deg);" ></i></span>
+											<span :class="{active : background['gradient']['orientation'] == 45}" @click="updateGradientOrientation(background, 45)"><i class="fa fa-arrow-up" style="transform: rotate(45deg);" ></i></span>
+											<span :class="{active : background['gradient']['orientation'] == 90}" @click="updateGradientOrientation(background, 90)"><i class="fa fa-arrow-up" style="transform: rotate(90deg);" ></i></span>
+											<span :class="{active : background['gradient']['orientation'] == 135}" @click="updateGradientOrientation(background, 135)"><i class="fa fa-arrow-up" style="transform: rotate(135deg);" ></i></span>
+											<span :class="{active : background['gradient']['orientation'] == 180}" @click="updateGradientOrientation(background, 180)"><i class="fa fa-arrow-up" style="transform: rotate(180deg);" ></i></span>
+											<span :class="{active : background['gradient']['orientation'] == 225}" @click="updateGradientOrientation(background, 225)"><i class="fa fa-arrow-up" style="transform: rotate(225deg);" ></i></span>
+											<span :class="{active : background['gradient']['orientation'] == 270}" @click="updateGradientOrientation(background, 270)"><i class="fa fa-arrow-up" style="transform: rotate(270deg);" ></i></span>
+											<span :class="{active : background['gradient']['orientation'] == 315}" @click="updateGradientOrientation(background, 315)"><i class="fa fa-arrow-up" style="transform: rotate(315deg);" ></i></span>
+										</div>
+								     </div>
+								     <div class="row align-items-center">
+								     
+								     	<div class="col-12">
+								     		<input type="text" data-alpha-enabled="true" data-transparent="true" v-color-code="background['gradient']['to_color']" :style="{borderLeftColor:background['gradient']['to_color']}"
+												v-model="background['gradient']['to_color']" readonly class="color-picker form-control eb-form-control" v-input-field="'blur'"/>
+								     	</div>
+								     	
+								     	<div class="col-12">
+								     		<input type="text" data-alpha-enabled="true" data-transparent="true"  v-color-code="background['gradient']['from_color']" :style="{borderLeftColor:background['gradient']['from_color']}"
+												v-model="background['gradient']['from_color']" readonly class="color-picker form-control eb-form-control" v-input-field="'blur'"/>
+								     	</div>
+								     	
+								     </div>
+						     
+						     </div>
+						     
+						</div>
+											
+</template>
+
+<template id="styleBorderTemplate">
+<div v-if="border">
+<div class="form-group row">
+								<label class="col-sm-12 col-form-label">Width</label> 
+								<div class="col-sm-12">
+									<input v-model="border['size']" type="range" min="0" max="20" v-input-field="'blur'"> 
+									<small class="">{{border['size']}}px</small>
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-12 col-form-label">Style</label> 
+								<div class="col-sm-12">
+									<select class="form-control eb-form-control" v-model="border['style']" v-input-field="'blur'">
+									<option
+										v-for="option in globals['borderStyleOptions']"
+										:value="option">{{option}}</option>
+								</select>
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-12 col-form-label">Color</label> 
+								<div class="col-sm-12">
+									<input type="text" v-color-code="border['color']" :style="{borderLeftColor:border['color']}" v-input-field="'blur'"
+												v-model="border['color']" readonly class="color-picker form-control eb-form-control" />
+								</div>
+							</div>
+							
+							<div v-if="border.hasOwnProperty('applyTo')" class="form-group row">
+							
+								<label class="col-sm-12 col-form-label">Apply To</label> 
+								<div class="col-sm-12">
+											<div class="form-check form-check-inline1">
+											  <input v-input-field="'change'" class="form-check-input" value="top" type="checkbox" v-model="border['applyTo']" id="applyToBorderTop">
+											  <label class="form-check-label" for="applyToBorderTop">
+											    Top
+											  </label>
+											</div>
+											
+											<div class="form-check form-check-inline1">
+											  <input v-input-field="'change'" class="form-check-input" value="bottom" type="checkbox" v-model="border['applyTo']" id="applyToBorderBottom">
+											  <label class="form-check-label" for="applyToBorderBottom">
+											    Bottom
+											  </label>
+											</div>
+											
+											<div class="form-check form-check-inline1">
+											  <input v-input-field="'change'" class="form-check-input" value="right" type="checkbox" v-model="border['applyTo']" id="applyToBorderRight">
+											  <label class="form-check-label" for="applyToBorderRight">
+											    Right
+											  </label>
+											</div>
+											
+											<div class="form-check form-check-inline1">
+											  <input v-input-field="'change'" class="form-check-input" value="left" type="checkbox" v-model="border['applyTo']" id="applyToBorderLeft">
+											  <label class="form-check-label" for="applyToBorderLeft">
+											    Left
+											  </label>
+											</div>
+								
+								</div>
+								
+							</div>
+							
+							<div v-if="border.hasOwnProperty('radius')" class="form-group row">
+								<label class="col-sm-12 col-form-label">Radius</label> 
+								<div class="col-sm-12">
+									<input v-model="border['radius']" type="range" min="0" max="100" v-input-field="'blur'"> 
+									<small class="">{{border['radius']}}px</small>
+								</div>
+							</div>
+							
+							<div v-if="border.hasOwnProperty('radiusApplyTo')" class="form-group row">
+							
+								<label class="col-sm-12 col-form-label">Radius Apply To</label> 
+								<div class="col-sm-12">
+											<div class="form-check form-check-inline1">
+											  <input v-input-field="'change'" class="form-check-input" value="top_left" type="checkbox" v-model="border['radiusApplyTo']" id="applyToRadiusTopLeft">
+											  <label class="form-check-label" for="applyToRadiusTopLeft">
+											    Top Left
+											  </label>
+											</div>
+											
+											<div class="form-check form-check-inline1">
+											  <input v-input-field="'change'" class="form-check-input" value="top_right" type="checkbox" v-model="border['radiusApplyTo']" id="applyToRadiusTopRight">
+											  <label class="form-check-label" for="applyToRadiusTopRight">
+											    Top Right
+											  </label>
+											</div>
+											
+											<div class="form-check form-check-inline1">
+											  <input v-input-field="'change'" class="form-check-input" value="bottom_left" type="checkbox" v-model="border['radiusApplyTo']" id="applyToRadiusBttomLeft">
+											  <label class="form-check-label" for="applyToRadiusBttomLeft">
+											    Bottom Left
+											  </label>
+											</div>
+											
+											<div class="form-check form-check-inline1">
+											  <input v-input-field="'change'" class="form-check-input" value="bottom_right" type="checkbox" v-model="border['radiusApplyTo']" id="applyToRadiusBottomRight">
+											  <label class="form-check-label" for="applyToRadiusBottomRight">
+											    Bottom Right
+											  </label>
+											</div>
+								
+								</div></div>
+								
+								
+							</div>				
+</template>
+
+<template id="columnSettingsTemplate">
+
+<div>
+
+			<div v-if="columns.length <= 12" class="text-right mb-2">
+						<a href="#"  @click="addNewColumn($event)">Add a new column</a>
+				</div>
+				
+						<draggable 
+								:list="columns"
+								:options="{group: {name: 'sectionList', put: true}, sort: true, handle: '.move-section'}"
+								>
+							
+							<div class="section-list-item settings-accordion" v-settings-accordion v-for="(column, index) in columns" 
+								style="padding: 10px; background: #f6f6f6; margin-bottom: 10px;">
+							
+								<div class="row section-item-actions m-0 p-0" style="margin-bottom: 2px;">
+										<div class="col no-gutter p-0" style="max-width: 20px;">
+											<span class="icon cursor-move"><i class="move-section fa fa-arrows"></i></span>
+										</div>
+										<div class="col no-gutter p-0">
+											<span>Column {{index+1}}</span>
+										</div>
+										<div class="col text-right no-gutter p-0" style="max-width: 50px;">
+											<span class="cursor-pointer pl-1" @click="removeColumn($event, index)"><i class="fa fa-remove" title="Remove Column" style="display: inline;"></i> </span>
+											<span class="cursor-pointer pl-1" @click="cloneColumn($event, column)"><i class="fa fa-clone" title="Clone Column" style="display: inline;"></i> </span>
+											<span class="accordion-toggle-body cursor-pointer pl-1"><i class="fa fa-angle-down accordion-open"></i><i class="fa fa-angle-right accordion-close"></i></span>
+										</div>
+										
+									</div>
+									
+									<div class="settings-accordion-body">
+									
+									   <div class="form-group">
+									     	<div class="form-check form-check-inline1 mb-3">
+														  <input v-input-field="'change'" class="form-check-input" value="top" type="checkbox" v-model="column['auto_width']" :id="'columnAutoWidth'+column.id">
+														  <label class="form-check-label" :for="'columnAutoWidth'+column.id">
+														    Adjust column width automatically
+														  </label>
+														</div>
+									     </div>
+									
+										<div v-if="!column.auto_width" class="form-group row">
+									
+												<label class="col-sm-12 col-form-label">Width</label> 
+												 <div class="col-sm-12"><input type="range" min="0" v-input-field="'blur'"
+														max="12"
+														v-model="column['size']"> 
+												</div>
+											</div>
+											
+											<div class="form-group">
+												<label>Align Items</label>
+												   		<select class="form-control eb-form-control text-capitalize" v-input-field="'blur'"
+															v-model="column['alignItems']">
+															<option value="default">Auto</option>
+															<option value="start">Start</option>
+															<option value="center">Center</option>
+															<option value="end">End</option>
+						
+														</select>
+												</div>
+											
+										<style-padding :padding="column.options.padding"></style-padding>
+											<hr>
+										<style-margin :margin="column.options.margin"></style-margin>
+										
+										<hr>
+										<label class="sub-label">Background</label>
+									
+										<style-background :background="column.options.background" ></style-background>
+										
+										<hr>
+										<label class="sub-label">Border</label>
+										
+										<style-border :border="column.options.border" ></style-border>
+										
+										<hr>
+										<label class="sub-label">Box Shadow</label>
+										<style-box-shadow :boxshadow="column.options.boxShadow"></style-box-shadow>
+									
+									</div>
+								
+								
+							</div>
+							
+							</draggable>
+
+</div>
+							
+</template>
+
+<template id="iconStyleSettingsTemplate">
+
+<div>
+
+			<div class="text-right mb-2">
+						<a href="#"  @click="addNewIcon($event)">Add a new icon</a>
+				</div>
+				
+						<draggable 
+								:list="icons"
+								:options="{group: {name: 'iconList', put: true}, sort: true, handle: '.move-section'}"
+								>
+							
+							<div class="section-list-item settings-accordion" v-settings-accordion v-for="(icon, index) in icons" 
+								style="padding: 10px; background: #f6f6f6; margin-bottom: 10px;">
+							
+								<div class="row section-item-actions m-0 p-0" style="margin-bottom: 2px;">
+										<div class="col no-gutter p-0" style="max-width: 20px;">
+											<span class="icon cursor-move"><i class="move-section fa fa-arrows"></i></span>
+										</div>
+										<div class="col no-gutter p-0">
+											<span><i class="fa" :class=['fa-'+icon.icon_class]></i></span>
+										</div>
+										<div class="col text-right no-gutter p-0" style="max-width: 50px;">
+											<span class="cursor-pointer pl-1" @click="removeIcon($event, index)"><i class="fa fa-remove" title="Remove Icon" style="display: inline;"></i> </span>
+											<span class="cursor-pointer pl-1" @click="cloneIcon($event, icon)"><i class="fa fa-clone" title="Clone Icon" style="display: inline;"></i> </span>
+											<span class="accordion-toggle-body cursor-pointer pl-1"><i class="fa fa-angle-down accordion-open"></i><i class="fa fa-angle-right accordion-close"></i></span>
+										</div>
+										
+									</div>
+									
+									<div class="settings-accordion-body">
+										
+										<fa-icon-library :option="icon"></fa-icon-library>
+										
+										<label class="sub-label mt-3">Size</label>
+										<div class="form-group">
+												<input type="number" v-input-field="'blur'"
+													v-model="icon.size" class="form-control eb-form-control" />
+										</div>
+										
+										<label class="sub-label">Color</label>
+										<div class="form-group">
+												<input type="text" v-color-code="icon.color" v-input-field="'blur'"
+																v-model="icon.color" readonly class="color-picker form-control eb-form-control" data-alpha-enabled="false"/>
+										</div>
+										
+										<label class="sub-label">Click Action</label>
+										<style-click-action  :clickaction="icon.clickAction"></style-click-action>
+											
+										<label class="sub-label">Space</label>
+										<style-padding :padding="icon.padding" :hideheading="true"></style-padding>
+												
+									</div>
+								
+								
+							</div>
+							
+							</draggable>
+
+</div>
+
+</template>
+
+<template id="carousalStyleSettingsTemplate">
+
+<div>
+
+<div>
+										  <b-modal v-model="showCarousalImagePopup" size="xl" ref="carousalModalPopup">
+										  
+										  <template v-slot:modal-title>
+										      <span style="font-size:20px;">Choose Image</span>
+										    </template>
+										    
+										  	<b-container fluid>
+										  		
+										  		<repository-image-files :allowscaling="false" :option="list[carousalSelectedIndex]" :fileurlkeyname="'img_url'" @closepopup="showCarousalImagePopup=false"><repository-image-files>
+										  		
+										  	</b-container>
+										  	
+										  	 <template v-slot:modal-footer>
+										        <div>
+										        	<span class="btn btn-outline-warning mr-2 btn-sm modal-close" @click="showCarousalImagePopup=false">Close</span>
+										        	<!-- <span class="btn btn-warning mr-2 btn-sm" @click="hideModal('bgImageModalPopup')">Okay</span>  -->
+										        </div>
+										      </template>
+										    
+										  </b-modal>
+										</div>
+										
+
+			<div class="text-right mb-2">
+						<a href="#"  @click="addNewItem($event)">Add a new item</a>
+				</div>
+				
+						<draggable 
+								:list="list"
+								:options="{group: {name: 'carousalList', put: true}, sort: true, handle: '.move-section'}"
+								@sort="updateInlineEditorContent()"
+								>
+							
+							<div class="section-list-item settings-accordion" v-settings-accordion v-for="(item, index) in list" 
+								style="padding: 10px; background: #f6f6f6; margin-bottom: 10px;">
+							
+								<div class="row section-item-actions m-0 p-0" style="margin-bottom: 2px;">
+										<div class="col no-gutter p-0" style="max-width: 20px;">
+											<span class="icon cursor-move"><i class="move-section fa fa-arrows"></i></span>
+										</div>
+										<div class="col no-gutter p-0">
+											<div v-html="item['content']" class="inline-text-container text-truncate" style="max-width: 120px;"> </div>
+										</div>
+										<div class="col text-right no-gutter p-0" style="max-width: 60px;">
+											<span class="cursor-pointer pl-1" @click="updateAciveStatus($event, item)"><i class="fa fa-eye" title="View Item" style="display: inline;"></i> </span>
+											<span class="cursor-pointer pl-1" @click="removeItem($event, index)"><i class="fa fa-remove" title="Remove Item" style="display: inline;"></i> </span>
+											<span class="cursor-pointer pl-1" @click="cloneItem($event, item)"><i class="fa fa-clone" title="Clone Item" style="display: inline;"></i> </span>
+											<span class="accordion-toggle-body font-size-13 cursor-pointer pl-1"><i class="fa fa-angle-down accordion-open"></i><i class="fa fa-angle-right accordion-close"></i></span>
+										</div>
+										
+									</div>
+									
+									<div class="settings-accordion-body">
+									
+										<div class="form-group">
+											<label>Text</label>
+											<div class="">
+												<div class="inline-text-editor tinymce-content" v-tinymce-editor-inline-elements :data-initialize-content="item['content']"></div>
+												<textarea style="display:none;visibility:hidden" v-model="item['content']" @change="updateAciveStatus($event, item)"></textarea>    
+											</div>
+										</div>
+										
+										<!-- <div class="form-group">
+									     	<div class="form-check form-check-inline1 mb-3">
+												  <input v-input-field="'change'" class="form-check-input" value="image" type="radio" v-model="item.thumbnail" id="carousalThumbnailImage">
+												  <label class="form-check-label" for="carousalThumbnailImage">
+												     Image
+												  </label>
+												</div>
+												
+												<div class="form-check form-check-inline1 mb-3">
+												  <input v-input-field="'change'" class="form-check-input" value="video" type="radio" v-model="item.thumbnail" id="carousalThumbnailVideo">
+												  <label class="form-check-label" for="carousalThumbnailVideo">
+												    Video
+												  </label>
+												</div>
+									     </div>
+									      -->
+										
+										<style-video-settings v-if="item.thumbnail == 'video'" :video_options="item['video_options']"></style-video-settings>
+										
+										<div  class="form-group" v-if="item.thumbnail == 'image'">
+										
+									<label >Image</label>
+									<div class="d-flex">
+										<div v-if="item['img_url']" style="width: 80px;padding: 10px">
+											<img :src="item['img_url']" width="100%" height="auto" class="display-image" alt="" />
+										</div>
+										
+										<div class="flex-grow-1">
+												<span class="btn btn-info btn-sm d-block mb-2" @click="carousalSelectedIndex=index,showCarousalImagePopup=true">Change Image </span>
+												<input type="text" class="form-control eb-form-control image-path" v-input-field="'blur'"
+														v-model="item['img_url']" @change="updateAciveStatus($event, item)" placeholder="Image URL"/>			
+										</div>
+										
+									</div>
+								</div>
+								     
+									</div>
+								
+								
+							</div>
+							
+							</draggable>
+
+</div>
+
+</template>
+
+<template id="styleVideoSettingsTemplate">
+
+<div>
+						<div class="form-group">
+							<label>Video Link To</label>
+							   		<select class="form-control eb-form-control text-capitalize" id="link-to" v-input-field="'blur'"
+										v-model="video_options['type']">
+										<option value="youtube">Youtube Video</option>
+										<option value="vimeo">Vimeo Video</option>
+										<option value="engagebay">EngageBay Video</option>
+	
+									</select>
+							</div>
+							
+							<div v-if="video_options['type'] === 'youtube' || video_options['type'] === 'vimeo'" >
+							
+								<div class="form-group">
+										<label v-if="video_options['type'] === 'youtube'" class="">Youtube video ID</label>
+										<label v-if="video_options['type'] === 'vimeo'" class="">Vimeo video ID</label>
+										<input id="link" type="url" autofocus class="form-control eb-form-control" v-input-field="'blur'"
+											v-model="video_options['url']" />
+								</div>
+								
+							</div>
+							
+							<div v-if="video_options['type'] == 'engagebay'" class="form-group">
+							
+								<engagebay-video-templates :videooptions="video_options">
+									
+								</engagebay-video-templates>
+									
+							</div>
+							
+							<!-- 
+							<div class="form-group">
+								<div class="form-check form-check-inline1 mb-3">
+								  <input v-input-field="'change'" class="form-check-input" value="top" type="checkbox" v-model="video_options['auto_play']" :id="'videoAutoPlay'+dummyid">
+								  <label class="form-check-label" :for="'videoAutoPlay'+dummyid">
+								    Auto Play
+								  </label>
+								</div>
+							</div>
+							 -->
+							
+							<div class="form-group">
+								<div class="form-check form-check-inline1 mb-3">
+								  <input v-input-field="'change'" class="form-check-input" value="top" type="checkbox" v-model="video_options['loop']" :id="'videoLoop'+dummyid">
+								  <label class="form-check-label" :for="'videoLoop'+dummyid">
+								    Loop
+								  </label>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<div class="form-check form-check-inline1 mb-3">
+								  <input v-input-field="'change'" class="form-check-input" value="top" type="checkbox" v-model="video_options['muted']" :id="'videoMuted'+dummyid">
+								  <label class="form-check-label" :for="'videoMuted'+dummyid">
+								    Muted
+								  </label>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<div class="form-check form-check-inline1 mb-3">
+								  <input v-input-field="'change'" class="form-check-input" value="top" type="checkbox" v-model="video_options['zoom_video']" :id="'videoZoom'+dummyid">
+								  <label class="form-check-label" :for="'videoZoom'+dummyid">
+								    Popout
+								  </label>
+								</div>
+							</div>
+							
+</div>
+
+</template>
+
+<template id="styleClickActionTemplate">
+
+<div>
+
+							<div class="form-group" >
+									<label>Action</label>
+									<select type="text" class="form-control eb-form-control" v-model="clickaction['type']">
+												<option value="none">None</option>
+												<option value="open_url_in_new_tab">Open URL in new tab</option>
+												<option value="open_url_in_same_tab">Open URL</option>
+												<option value="scroll_to_section">Choose a section</option>
+												<option value="send_an_email">Send an Email</option>
+												<option value="show_popup">Show Popup</option>
+									</select>
+														
+								</div>
+								
+								<div v-if="clickaction['type'] == 'show_popup'" class="form-group">
+							
+										<engagebay-popup-list :popupoptions="clickaction" :popupidkey="'value'">
+											
+										</engagebay-popup-list>
+											
+								</div>
+								
+								<div v-if="clickaction['type']=='open_url_in_same_tab' || clickaction['type']=='open_url_in_new_tab' || clickaction['type']=='send_an_email'" 
+									class="form-group">
+									    <label v-if="clickaction['type']=='send_an_email'">Email</label>
+										<label v-else>URL</label> 
+										<input class="form-control eb-form-control" v-model="clickaction['value']" />
+									</div>
+									
+								<div v-if="clickaction['type']=='scroll_to_section'" class="form-group">
+										<label>Select a Section</label> 
+										<select type="text" class="form-control eb-form-control" v-model="clickaction['value']">
+												<option>--Select--</option>
+												<option v-for="section in getPageSection()" :value="section.id" v-html="(section.options.name) ? section.options.name : section.id"></option>
+										</select>								
+								</div>
+
+
+</div>
+
+</template>
+
+<template id="navlinkStyleSettingsTemplate">
+
+	<div>
+
+			<div class="text-right mb-2">
+						<a href="#"  @click="addNewNavbarLink($event)">Add a new option</a>
+				</div>
+				
+						<draggable 
+								:list="navlist"
+								:options="{group: {name: 'navbarLinkList', put: true}, sort: true, handle: '.move-section'}"
+								@sort="updateInlineEditorContent()"
+								>
+							
+							<div class="section-list-item settings-accordion" v-settings-accordion v-for="(button, index) in navlist" 
+								style="padding: 10px; background: #f6f6f6; margin-bottom: 10px;">
+							
+								<div class="row section-item-actions m-0 p-0" style="margin-bottom: 2px;">
+										<div class="col no-gutter p-0" style="max-width: 20px;">
+											<span class="icon cursor-move"><i class="move-section fa fa-arrows"></i></span>
+										</div>
+										<div class="col no-gutter p-0">
+											<span class="inline-text-container" v-html="button.text"></span>
+										</div>
+										<div class="col text-right no-gutter p-0" style="max-width: 50px;">
+											<span class="cursor-pointer pl-1" @click="removeButton($event, index, navlist)"><i class="fa fa-remove" title="Remove Option" style="display: inline;"></i> </span>
+											<span class="cursor-pointer pl-1" @click="cloneButton($event, button)"><i class="fa fa-clone" title="Clone Option" style="display: inline;"></i> </span>
+											<span class="accordion-toggle-body font-size-13 cursor-pointer pl-1"><i class="fa fa-angle-down accordion-open"></i><i class="fa fa-angle-right accordion-close"></i></span>
+										</div>
+										
+									</div>
+									
+									<div class="settings-accordion-body">
+									
+									   <div class="form-group">
+									   
+									   <div class="form-check form-check-inline1">
+											  <input v-input-field="'change'" class="form-check-input" type="checkbox" v-model="button['dropdown']" :id="index+'buttonDropdown'">
+											  <label class="form-check-label" :for="index+'buttonDropdown'">
+											    Dropdown
+											  </label>
+											</div>
+											
+								     </div>
+								     
+										<div class="form-group">
+											<label>Option name</label>
+											<div class="">
+												<div class="tinymce-content inline-text-container inline-text-editor" v-tinymce-editor-inline-elements :data-initialize-content="button['text']"></div>
+												<textarea style="display:none;visibility:hidden" v-model="button['text']"></textarea>    
+											</div>
+										</div>
+								     
+								     <template v-if="!button['dropdown']">
+								     	 <style-click-action  :clickaction="button.clickAction"></style-click-action>
+								     </template>
+								    
+								     <div v-if="button['dropdown']">
+								     	
+								     	<hr>
+								     	
+								     	<div class="text-right mb-2">
+												<a href="#"  @click="addNewDropdownItem($event, button.dropdownList)">Add list items</a>
+										</div>
+				
+		     							<div v-for="(dropdown, index1) in button.dropdownList">
+		     								
+		     								<span class="cursor-pointer pull-right" @click="removeDropdownItem($event, button.dropdownList, index1)"><i class="fa fa-remove" title="Remove Column" style="display: inline;"></i> </span>
+
+		     								 <div class="form-group">
+													<label>List item name</label>
+													<input min="0"  type="text" autofocus class="form-control eb-form-control" v-input-field="'blur'"
+														v-model.lazy="dropdown['text']"/>
+												
+											</div>
+											
+											<style-click-action :clickaction="dropdown.clickAction"></style-click-action>
+																					
+		     								<hr>
+		     							</div>
+									 </div> 
+									
+									</div>
+								
+								
+							</div>
+							
+							</draggable>
+
+</div>
+</template>

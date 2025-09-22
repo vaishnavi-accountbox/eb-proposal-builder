@@ -1,0 +1,744 @@
+<template id="contentSearchTemplate">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+
+            <div class="content-overlay" v-if="renderby=='builder'"></div>
+
+            <div class="form-group search-group m-0">
+                <i :style="getSelectedStyles( content.options, {}, ['fieldFont'])" class="fa fa-search"></i>
+                <input
+                        :placeholder="content.options.placeholder"
+                        :style="getSelectedStyles( content.options, {height: 'auto'}, ['fieldFont', 'fieldPadding', 'fieldBorder', 'fieldBackground'])"
+                        class="search article-search form-control"/>
+            </div>
+
+        </div>
+    </div>
+
+
+</template>
+
+
+<template id="contentNavbarListTemplate">
+    <div>
+
+        <nav class="navbar navbar-light navbar-expand-sm p-0"
+             v-if="renderby=='builder'">
+
+            <ul :class="{'ml-auto': content.options.nav_list_alignment=='right',
+    								'm-auto': content.options.nav_list_alignment=='center',
+    								'mr-auto': content.options.nav_list_alignment=='left',
+    								'flex-direction-column' : content.options.orientation == 'vertical'
+    								}" class="navbar-nav">
+
+
+                <template v-for="(navLink, index1) in content.options.nav_link_list">
+
+                    <li class="nav-item" v-if="!navLink.dropdown">
+                        <a :style="getSelectedStyles( content.options, {}, ['font', 'navPadding']) "
+                           class="nav-link inline-text-container"
+                           href="#" v-html="navLink.text"></a>
+                    </li>
+
+                    <li class="nav-item dropdown" v-if="navLink.dropdown">
+                        <a :data-target="'#navBuilderDropDown'+content.id+index1"
+                           :style="getSelectedStyles( content.options, {}, ['font', 'navPadding']) "
+                           aria-expanded="false"
+                           aria-haspopup="true" class="nav-link dropdown-toggle inline-text-container"
+                           data-toggle="dropdown"
+                           href="#" id="navbarDropdown" role="button" v-html="navLink.text"
+                           v-navbar-toggler>
+                        </a>
+                        <div :id="'navBuilderDropDown'+content.id+index1" aria-labelledby="navbarDropdown"
+                             class="dropdown-menu">
+                            <a class="dropdown-item" href="#"
+                               v-for="dropdown in navLink.dropdownList">{{dropdown.text}}</a>
+                        </div>
+                    </li>
+
+                </template>
+
+            </ul>
+        </nav>
+
+        <nav class="navbar navbar-light navbar-expand-sm p-0"
+
+             v-if="renderby=='page'">
+
+            <ul :class="{'ml-auto': content.options.nav_list_alignment=='right',
+    								'm-auto': content.options.nav_list_alignment=='center',
+    								'mr-auto': content.options.nav_list_alignment=='left',
+    								'flex-direction-column' : content.options.orientation == 'vertical'
+    								}" class="navbar-nav">
+
+                <template v-for="navLink in content.options.nav_link_list">
+
+                    <li class="nav-item" v-if="!navLink.dropdown">
+                        <a :class="{'engagebay-lp-button' : navLink.clickAction.type!='none' && navLink.clickAction.value}"
+                           :data-actionType="navLink.clickAction.type"
+                           :data-actionValue="navLink.clickAction.value"
+                           :href="(navLink.clickAction && navLink.clickAction.value) ? navLink.clickAction.value : '#'"
+                           :style="getSelectedStyles( content.options, {}, ['font', 'navPadding']) "
+                           class="nav-link inline-text-container"
+                           v-html="navLink.text"></a>
+                    </li>
+
+                    <li class="nav-item dropdown" v-if="navLink.dropdown">
+                        <a :style="getSelectedStyles( content.options, {}, ['font', 'navPadding']) "
+                           aria-expanded="false"
+                           aria-haspopup="true" class="nav-link dropdown-toggle inline-text-container"
+                           data-toggle="dropdown" href="#" id="navbarDropdown"
+                           role="button" v-html="navLink.text">
+                        </a>
+                        <div aria-labelledby="navbarDropdown" class="dropdown-menu">
+                            <a :class="{'engagebay-lp-button' : dropdown.clickAction.type!='none' && dropdown.clickAction.value}"
+                               :data-actionType="dropdown.clickAction.type"
+                               :data-actionValue="dropdown.clickAction.value"
+                               :href="(dropdown.clickAction && dropdown.clickAction.value) ? dropdown.clickAction.value : '#'"
+                               class="dropdown-item"
+                               v-for="dropdown in navLink.dropdownList"
+                            >{{dropdown.text}}</a>
+                        </div>
+                    </li>
+
+                </template>
+
+            </ul>
+        </nav>
+
+    </div>
+
+</template>
+
+<template id="contentNavbarTemplate">
+
+    <div>
+
+        <nav :class="{'navbar-expand-md': (viewport == 'desktop')}"
+             class="navbar navbar-light p-0" v-if="renderby=='builder'">
+
+
+            <a class="navbar-brand" href="#">
+                <img :src="content.options.brand_img" alt="" class="d-inline-block align-middle" height="30"
+                     v-if="content.options.brand_img" width="auto">
+                <span class="inline-text-container align-middle" v-html="content.options.brand_text"></span>
+            </a>
+
+            <button :data-target="'#navbarNavDropdownBuilder_'+content.id" aria-controls="navbarNavDropdown"
+                    aria-expanded="false" aria-label="Toggle navigation"
+                    class="navbar-toggler" data-toggle="collapse"
+                    type="button" v-navbar-toggler>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div :id="'navbarNavDropdownBuilder_'+content.id" class="collapse navbar-collapse">
+                <ul :class="{'ml-auto': content.options.nav_list_alignment=='right', 'm-auto': content.options.nav_list_alignment=='center', 'mr-auto': content.options.nav_list_alignment=='left'}"
+                    class="navbar-nav">
+
+                    <template v-for="(navLink, index1) in content.options.nav_link_list">
+
+                        <li class="nav-item" v-if="!navLink.dropdown">
+                            <a :style="getSelectedStyles( content.options, {}, ['font', 'navPadding'])"
+                               class="nav-link inline-text-container"
+                               href="#" v-html="navLink.text"></a>
+                        </li>
+
+                        <li class="nav-item dropdown" v-if="navLink.dropdown">
+                            <a :data-target="'#navBuilderDropDown'+content.id+index1"
+                               :style="getSelectedStyles( content.options, {}, ['font', 'navPadding'])"
+                               aria-expanded="false"
+                               aria-haspopup="true" class="nav-link dropdown-toggle inline-text-container"
+                               data-toggle="dropdown"
+                               href="#" id="navbarDropdown" role="button" v-html="navLink.text"
+                               v-navbar-toggler>
+                            </a>
+                            <div :id="'navBuilderDropDown'+content.id+index1" aria-labelledby="navbarDropdown"
+                                 class="dropdown-menu">
+                                <a class="dropdown-item" href="#" v-for="dropdown in navLink.dropdownList">{{dropdown.text}}</a>
+                            </div>
+                        </li>
+
+                    </template>
+
+                </ul>
+            </div>
+        </nav>
+
+        <nav :class="{'navbar-expand-md': (viewport == 'desktop')}"
+             class="navbar navbar-light p-0" v-if="renderby=='page'">
+
+            <a :href="content.options.brand_link" class="navbar-brand">
+                <img :src="content.options.brand_img" alt="" class="d-inline-block align-middle" height="30"
+                     v-if="content.options.brand_img" width="auto">
+                <span class="inline-text-container align-middle" v-html="content.options.brand_text"></span>
+            </a>
+
+            <button :data-target="'#navbarNavDropdown_'+content.id" aria-controls="navbarNavDropdown"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation" class="navbar-toggler"
+                    data-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div :id="'navbarNavDropdown_'+content.id" class="collapse navbar-collapse">
+                <ul :class="{'ml-auto': content.options.nav_list_alignment=='right', 'm-auto': content.options.nav_list_alignment=='center', 'mr-auto': content.options.nav_list_alignment=='left'}"
+                    class="navbar-nav">
+
+                    <template v-for="navLink in content.options.nav_link_list">
+
+                        <li class="nav-item" v-if="!navLink.dropdown">
+                            <a :class="{'engagebay-lp-button' : navLink.clickAction.type!='none' && navLink.clickAction.value}"
+                               :data-actionType="navLink.clickAction.type"
+                               :data-actionValue="navLink.clickAction.value"
+                               :href="(navLink.clickAction && navLink.clickAction.value) ? navLink.clickAction.value : '#'"
+                               :style="getSelectedStyles( content.options, {}, ['font', 'navPadding'])"
+                               class="nav-link inline-text-container"
+                               v-html="navLink.text"></a>
+                        </li>
+
+                        <li class="nav-item dropdown" v-if="navLink.dropdown">
+                            <a :style="getSelectedStyles( content.options, {}, ['font', 'navPadding'])"
+                               aria-expanded="false"
+                               aria-haspopup="true" class="nav-link dropdown-toggle inline-text-container"
+                               data-toggle="dropdown" href="#" id="navbarDropdown"
+                               role="button" v-html="navLink.text">
+                            </a>
+                            <div aria-labelledby="navbarDropdown" class="dropdown-menu">
+                                <a :class="{'engagebay-lp-button' : dropdown.clickAction.type!='none' && dropdown.clickAction.value}"
+                                   :data-actionType="dropdown.clickAction.type"
+                                   :data-actionValue="dropdown.clickAction.value"
+                                   :href="(dropdown.clickAction && dropdown.clickAction.value) ? dropdown.clickAction.value : '#'"
+                                   class="dropdown-item"
+                                   v-for="dropdown in navLink.dropdownList"
+                                >{{dropdown.text}}</a>
+                            </div>
+                        </li>
+
+                    </template>
+
+                </ul>
+            </div>
+        </nav>
+
+    </div>
+
+</template>
+
+<template id="contentBlockTemplate">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+
+            <row-column :columns="content.columns" :options="content.options" :viewport="viewport"
+                        v-if="renderby=='builder'"></row-column>
+
+            <page-render-row-column :columns="content.columns" v-if="renderby=='page'">
+
+            </page-render-row-column>
+
+        </div>
+    </div>
+
+</template>
+
+<template id="contentImageTemplate">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+
+            <div :style="{'text-align': content.options.align}" class="" style="line-height: normal;"
+                 v-if="renderby=='builder'">
+
+                <img :src="content.options.image" :style="getSelectedStyles( content.options, {}, ['image_border'])"
+                     :width="(content.options.full_width) ? '100%' :	getDimensions(content.options.width)"
+                     border="0"
+                     height="getDimensions(content.options.height)"
+                     style="max-width:100%;box-sizing: border-box;outline:none;" tabindex="0">
+
+            </div>
+
+            <div :style="{'text-align': content.options.align}" class="" v-if="renderby=='page'">
+
+                <img :alt="content.options.altText"
+                     :class="{'engagebay-lp-button' : content.options.clickAction.type!='none' && content.options.clickAction.value}"
+                     :data-actionType="content.options.clickAction.type"
+                     :data-actionValue="content.options.clickAction.value"
+                     :src="content.options.image"
+                     :style="getSelectedStyles( content.options, {}, ['image_border'])" :title="content.options.title"
+                     :width="(content.options.full_width) ? '100%' : getDimensions(content.options.width)"
+                     height="getDimensions(content.options.height)"
+                     style="max-width:100%;box-sizing: border-box;outline:none;" tabindex="0">
+
+            </div>
+
+        </div>
+    </div>
+
+</template>
+
+<template id="contentTextTemplate">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+
+            <div :class="[getFontFamilyClassName(content.options.font)]"
+                 :style="{'text-align': content.options.font.alignment}"
+                 class="content-text-container" v-if="renderby=='builder'">
+
+                <div :data-initialize-content="content.options.text"
+                     :data-old-toolbar="(content.options.font)?'':'true'"
+                     class="tinymce-content"
+                     v-tinymce-editor="content.options.text"></div>
+                <textarea style="display:none;visibility:hidden" v-model="content.options.text"></textarea>
+
+            </div>
+
+            <div :class="[getFontFamilyClassName(content.options.font)]"
+                 :style="{'text-align': content.options.font.alignment}"
+                 class="content-text-container" v-html="content.options.text"
+                 v-if="renderby=='page'">
+
+            </div>
+
+        </div>
+    </div>
+</template>
+
+<template id="contentHeading3Template">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+
+            <div :class="[getFontFamilyClassName(content.options.font)]"
+                 :style="{'text-align': content.options.font.alignment}"
+                 v-if="renderby=='builder'">
+
+                <div :data-initialize-content="content.options.text"
+                     :data-old-toolbar="(content.options.font)?'':'true'"
+                     class="tinymce-content"
+                     v-tinymce-editor="content.options.text"></div>
+                <textarea style="display:none;visibility:hidden" v-model="content.options.text"></textarea>
+
+            </div>
+
+            <div :class="[getFontFamilyClassName(content.options.font)]"
+                 :style="{'text-align': content.options.font.alignment}"
+                 v-html="content.options.text" v-if="renderby=='page'">
+            </div>
+
+        </div>
+    </div>
+</template>
+
+<template id="contentButtonTemplate">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+
+            <div :style="{'text-align': content.options.align}" style="position: relative;line-height: normal;"
+                 v-if="renderby=='builder'">
+
+                <button :class="[getFontFamilyClassName(content.options.font)]"
+                        :style="getSelectedStyles(content.options, {}, ['buttonPadding', 'buttonBackground', 'buttonBorder'])"
+                        class="btn btn-default"
+                        style="font-size: inherit; color: inherit; font-weight: inherit; font-family: inherit; line-height: inherit;word-break: break-word;outline:none;line-height: normal;padding:0;"
+                >{{ content.options.buttonText }}
+                </button>
+
+            </div>
+
+            <div :style="{'text-align': content.options.align}" style="line-height: normal;" v-if="renderby=='page'">
+                <button :class="[getFontFamilyClassName(content.options.font)]"
+                        :data-actionType="content.options.clickAction.type"
+                        :data-actionValue="content.options.clickAction.value"
+                        :style="getSelectedStyles(content.options, {}, ['buttonPadding','buttonBackground', 'buttonBorder'])"
+                        class="btn btn-default engagebay-lp-button"
+                        style="font-size: inherit; color: inherit; font-weight: inherit; font-family: inherit; line-height: inherit;word-break: break-word;outline:none;line-height: normal;padding:0;"
+                >{{ content.options.buttonText }}
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+</template>
+
+
+<template id="contentPopupTemplate">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+
+            <div :style="{'text-align': content.options.align}" style="position: relative;line-height: normal;"
+                 v-if="renderby=='builder'">
+
+                <button :class="[getFontFamilyClassName(content.options.font)]"
+                        :style="getSelectedStyles(content.options, {}, ['buttonPadding', 'buttonBackground', 'buttonBorder'])"
+                        class="btn btn-default"
+                        style="font-size: inherit; color: inherit; font-weight: inherit; font-family: inherit; line-height: inherit;word-break: break-word;outline:none;line-height: normal;padding:0;"
+                >{{ content.options.buttonText }}
+                </button>
+
+            </div>
+
+            <div :style="{'text-align': content.options.align}" style="line-height: normal;" v-if="renderby=='page'">
+                <button :class="[getFontFamilyClassName(content.options.font)]"
+                        :data-actionValue="content.options.popup_options.engagebay_popup_id"
+                        :style="getSelectedStyles(content.options, {}, ['buttonPadding', 'buttonBackground', 'buttonBorder'])"
+                        class="btn btn-default engagebay-lp-button"
+                        data-actionType="show_popup"
+                        style="font-size: inherit; color: inherit; font-weight: inherit; font-family: inherit; line-height: inherit;word-break: break-word;outline:none;line-height: normal;padding:0;"
+                >{{ content.options.buttonText }}
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+</template>
+
+<template id="contentDropdownTemplate">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+
+            <div :style="{'text-align': content.options.align}" style="position: relative;line-height: normal;"
+                 v-if="renderby=='builder'">
+
+                <div class="dropdown">
+                    <button :class="[getFontFamilyClassName(content.options.font)]"
+                            :style="getSelectedStyles(content.options, {}, ['buttonPadding', 'buttonBackground', 'buttonBorder'])"
+                            aria-expanded="false"
+                            aria-haspopup="true" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                            style="font-size: inherit; color: inherit; font-weight: inherit; font-family: inherit; line-height: inherit;word-break: break-word;outline:none;line-height: normal;padding:0;"
+                            type="button">
+                        {{ content.options.buttonText }}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                    </div>
+                </div>
+
+            </div>
+
+            <div :style="{'text-align': content.options.align}" style="line-height: normal;" v-if="renderby=='page'">
+
+                <div :class="[getFontFamilyClassName(content.options.font)]" class="dropdown">
+                    <button
+                            :style="getSelectedStyles(content.options, {}, ['buttonPadding', 'buttonBackground', 'buttonBorder'])"
+                            aria-expanded="false"
+                            aria-haspopup="true" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                            style="font-size: inherit; color: inherit; font-weight: inherit; font-family: inherit; line-height: inherit;word-break: break-word;outline:none;line-height: normal;padding:0;"
+                            type="button">
+                        {{ content.options.buttonText }}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a :href="action.link" class="dropdown-item" target="_blank"
+                           v-for="action in content.options['action_list']"
+                           v-if="action.link">{{action.text}}</a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</template>
+
+<template id="contentDividerTemplate">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+
+            <div :style="{width: content.options.width+'px', borderTop: content.options.divider.size+'px ' + content.options.divider.style + ' ' + content.options.divider.color}"></div>
+
+        </div>
+    </div>
+
+</template>
+
+<template id="contentVerticalDividerTemplate">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+
+            <div :style="{'text-align': content.options.align}">
+                <span :style="{width:content.options.divider.size+'px', height: content.options.height+'px', borderRight: content.options.divider.size+'px ' + content.options.divider.style + ' ' + content.options.divider.color}"
+                      style="display: inline-block;"></span>
+            </div>
+
+        </div>
+    </div>
+
+</template>
+
+<template id="contentIconTemplate">
+
+    <div class="row m-0">
+
+        <div class="col-lg-12 p-0" style="position:relative;" v-if="renderby=='builder'">
+
+            <div :style="{'text-align': content.options.align}" style="line-height: normal;">
+
+                <i :class="'fa-'+icon.icon_class"
+                   :style="{display:(content.options.orientation=='vertical')?'block':'inline-block', color: icon.color, fontSize:icon.size+'px', padding: icon.padding.top+'px '+icon.padding.right+'px '+icon.padding.bottom+'px '+icon.padding.left+'px'}"
+                   aria-hidden="true"
+                   class="fa"
+                   v-for="icon in content.options.icon_list"
+                ></i>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-12 p-0" v-if="renderby=='page'">
+
+            <div :style="{'text-align': content.options.align}" style="line-height: normal;"
+            >
+
+                <i :class="['fa-'+icon.icon_class, (icon.clickAction.type!='none' && icon.clickAction.value) ? 'engagebay-lp-button' : '']"
+                   :data-actionType="icon.clickAction.type" :data-actionValue="icon.clickAction.value"
+                   :style="{display:(content.options.orientation=='vertical')?'block':'inline-block' ,color: icon.color, fontSize:icon.size+'px', padding: icon.padding.top+'px '+icon.padding.right+'px '+icon.padding.bottom+'px '+icon.padding.left+'px'}"
+                   aria-hidden="true" class="fa"
+                   v-for="icon in content.options.icon_list"
+                ></i>
+
+            </div>
+
+        </div>
+
+    </div>
+</template>
+
+<template id="contentSocialTemplate">
+
+    <icon-template :content="content" :renderby="renderby" :viewport="viewport"></icon-template>
+
+</template>
+
+<template id="contentHTMLTemplate">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+
+            <div :style="{height: content.options.height+'px'}" style="background: #f6f6f6;" v-if="renderby=='builder'">
+                <div :style="{height: content.options.height+'px'}" class="row align-items-center"
+                     style="overflow: hidden;">
+                    <div class="col">
+                        <div class="p-2 text-center">
+                            <div><i class="fa fa-code"></i></div>
+                            <div>View HTML in preview mode</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="overflow-y:auto;overflow-x:auto;" v-if="renderby=='page'">
+
+                <iframe :data-srcdoc="content.options.html"
+                        :style="{height: content.options.height+'px',width: content.options.width+'px'}"
+                        class="lp-html-content-frame" frameborder="0"
+                        onload="loadHTMLTypeContentInFrame(this)"></iframe>
+
+            </div>
+
+        </div>
+    </div>
+
+</template>
+
+<template id="contentSpaceTemplate">
+
+    <div :style="{height: content.options.height+'px'}">
+
+    </div>
+
+</template>
+
+<template id="contentVideoTemplate">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0"
+             v-if="content.options.video_options.url && content.options.video_options.type">
+            <div :class="{'ml-auto': content.options.align == 'right', 'm-auto': content.options.align == 'center', 'mr-auto': content.options.align == 'left'}"
+                 :style="{'width':(content.options.full_width) ? '100%' : getDimensions(content.options.width), 'height': getDimensions(content.options.height)}">
+                <video-render-options :renderby="renderby"
+                                      :video_options="content.options.video_options"></video-render-options>
+            </div>
+
+        </div>
+    </div>
+</template>
+
+<template id="videoRenderOptionsTemplate">
+
+    <div style="position: relative;height: 100%;" v-if="video_options.url && video_options.type">
+
+        <div :data-target="'#videoModal_'+dummyid" class="content-overlay" data-toggle="modal"
+             v-if="renderby=='builder'"></div>
+
+        <div :data-target="'videoModal_'+dummyid" class="video-overlay bmodal-toggle"
+             v-if="renderby=='page' && video_options.zoom_video"></div>
+
+        <video :class="{'muted-video' : video_options.muted,
+					 		'video-autoplay': renderby=='page' && video_options.auto_play && !video_options.zoom_video}"
+               :loop="video_options.loop"
+               :poster="video_options.thumbnail" class="inline-video-play"
+               controls
+               height="100%"
+               onclick="return false;"
+               style="max-width:100%;box-sizing: border-box;"
+               v-if="video_options.type == 'engagebay'"
+               width="100%">
+
+            <source :src="video_options.url" :type="getVideoType()">
+
+            Your browser does not support the video tag.
+        </video>
+
+        <iframe :src="getIframeVideoSrcURL()" allowfullscreen class="no-border" frameborder="0"
+                height="100%" mozallowfullscreen
+                v-if="video_options.type == 'youtube' || video_options.type == 'vimeo' " webkitallowfullscreen
+                width="100%">
+
+        </iframe>
+
+        <!-- Modal -->
+        <div :aria-labelledby="'#videoModalLabel_'+dummyid" :class="['videoModal_'+dummyid]"
+             aria-hidden="true" class="modal fade video-modal" tabindex="-1"
+             v-if="renderby=='page' && video_options.zoom_video">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                    <div class="modal-body p-0">
+
+                        <button aria-label="Close" class="close btn btn-default" data-dismiss="modal" type="button">
+                            <span aria-hidden="true" class="fa fa-times-circle"></span>
+                        </button>
+
+                        <video :class="{'muted-video' : video_options.muted}"
+                               :class="{'zoom-video-autoplay': video_options.auto_play}"
+                               :loop="video_options.loop" :muted="video_options.muted"
+                               :poster="video_options.thumbnail"
+                               class=""
+                               controls
+                               height="100%" onclick="return false;"
+                               style="max-width:100%;box-sizing: border-box;" v-if="video_options.type == 'engagebay'"
+                               width="100%">
+
+                            <source :src="video_options.url" :type="getVideoType(true)">
+
+                            Your browser does not support the video tag.
+                        </video>
+
+                        <iframe :src="getIframeVideoSrcURL(true)" allowfullscreen class="no-border" frameborder="0"
+                                height="100%"
+                                mozallowfullscreen
+                                v-if="video_options.type == 'youtube' || video_options.type == 'vimeo' "
+                                webkitallowfullscreen width="100%">
+
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="contentFormTemplate">
+
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+
+            <div :style="{'text-align': content.options.align}" style="overflow: hidden;" v-if="renderby=='builder'">
+                <div class="content-overlay"></div>
+                <iframe :src="'/landingpage-builder/inline-form.jsp?id=' + content.options.form_options.engagebay_form_id"
+                        :style="{height: content.options.height+'px', width: content.options.width+'px'}"
+                        allowtransparency="true"
+                        style="overflow:hidden;border: none;"
+                        v-if="content.options.form_options.engagebay_form_id"></iframe>
+                <div :style="{height: content.options.height+'px'}" class="row align-items-center"
+                     style="overflow: hidden;background: #f6f6f6;"
+                     v-else>
+                    <div class="col">
+                        <div class="p-2 text-center">
+                            <div><i class="fa fa-server"></i></div>
+                            <div>Please select a form</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div :style="{'text-align': content.options.align}"
+                 style="line-height: normal;overflow-y:auto;overflow-x:auto;"
+                 v-if="renderby=='page'">
+                <div :data-id="content.options.form_options.engagebay_form_id"
+                     :id="'eh_form_'+content.options.form_options.engagebay_form_id"
+                     :style="{'text-align': content.options.align}"
+                     class="engage-hub-form-embed"></div>
+            </div>
+
+        </div>
+    </div>
+</template>
+
+<template id="builderPageRenderRowColumn">
+
+    <div class="m-0 p-0 row">
+
+        <div :class="[ 'align-self-'+ column.alignItems, getColumnClassNameWithoutViewport(column)]"
+             :style="getSelectedStyles(column.options, {}, ['padding', 'margin', 'border', 'box-shadow', 'background'])"
+             class=""
+             v-for="column in columns"
+        >
+
+            <div
+                    :class="[content.type+'-content', 'desktop-visibilty-'+content.options.desktop.visible, 'mobile-visibilty-'+content.options.mobile.visible]"
+                    :style="getSelectedStyles(content.options, {}, ['padding', 'margin', 'background', 'box-shadow', 'border', 'font'])"
+                    v-for="(content, index) in column.contents"
+            >
+
+                <component :content="content" :is="content.component" :renderby="'page'" :viewport="'desktop'">
+                </component>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</template>
+
+<template id="builderHTMLContent">
+
+    <div class="builder-html-content" style="display:none;">
+
+        <div :class="['section-page-content', 'section-'+section.id]" v-for="section in prefs.sections">
+            <div :class="[getFontFamilyClassName(prefs.bodySettings.font)]"
+                 :style="getSelectedStyles(section.options, {}, ['background', 'border', 'box-shadow', 'margin'])"
+                 style="position: relative;">
+
+                <section-video-background
+                        :renderby="'page'"
+                        :video="section.options.background.video"
+                        v-if="section.options.background.type == 'video' && section.options.background.video.url"></section-video-background>
+
+                <div :class="[getContainerClass(prefs.bodySettings.contentWidth)]"
+                     :style="getSelectedStyles(section.options, {}, ['padding'])">
+
+                    <page-render-row-column :columns="section.columns">
+
+                    </page-render-row-column>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+</template>

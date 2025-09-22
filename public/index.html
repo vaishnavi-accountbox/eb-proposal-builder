@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Proposal Builder</title>
+
+  <!-- Optional: Viewport for responsiveness -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Vite will inject CSS and JS during build -->
+</head>
+<body>
+<script>
+    var goBack = "";
+    var token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySW5mbyI6eyJjbGFpbWVkSWQiOiJlbmdhZ2ViYXkuY29tIiwiZW1haWwiOiJpYnJhaGltQGVuZ2FnZWJheS5jbyIsInVzZXJJZCI6NTAxMzc3MzAyMjY1ODU2MCwiZG9tYWluSWQiOjUyOTUyNDc5OTkzNjkyMTYsImNyZWF0ZWRUaW1lIjoxNzUxNDQzNTE1LCJyb2xlIjpudWxsLCJhY3Rpdml0eVZlcnNpb24iOiJWMyIsInBsYW5MaW1pdHNWZXJzaW9uIjoiVjciLCJzb3VyY2UiOm51bGwsInJlc2VsbGVySUQiOm51bGwsInJlcXVlc3RKc0FwaUtleSI6bnVsbCwiYWRtaW4iOnRydWUsImlwQWRkcmVzcyI6bnVsbCwicmVzZWxsZXJQYXJlbnRBY2NvdW50IjpmYWxzZSwib3duZXIiOnRydWUsInRpbWV6b25lIjoiQXNpYS9Db2xvbWJvIiwiZGF0ZWZvcm1hdCI6Ik1NL2RkL3l5eXkiLCJ0aW1lZm9ybWF0IjoiMjQifSwiZXhwIjoxNzU3OTE3NjE3LCJpYXQiOjE3NTc5MTQwMTd9.3ClZKStwwwh4cMYcTC1l8trNpsxz-gBLmJnJwPZiAxA"
+    var preview = false;
+    var resource_host = "http://localhost:8080";
+    var resource_path = resource_host + "/static/js/designer/";
+    var LANDING_PAGE_JSON = {};
+    window.baseUrl = resource_host || "/";
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css"></script>
+
+<script src="https://d2p078bqz5urf7.cloudfront.net/cloud/prod/assets/lib/tinymce/tinymce_5.2.0/tinymce.min.js"></script>  
+<script>
+    // const script = document.createElement("script");
+    // script.src = "https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.js";
+//     script.async = false;
+//     script.onload = () => {
+//         // Put the code that should run after the script is loaded here
+//         console.log("head.js loaded");
+//         // your next lines
+
+//         // window.resource_path = resource_host + "/static/js/designer/";
+//         // window.baseUrl = resource_host || "/";
+
+// // var resourcePath = "http://localhost:8080/static/js/designer/";
+// // if (version != "localhost")
+// //     var resourcePath = "ad/" + version + "/static/js/designer/";
+
+//         // Load CSS files
+//         head.load(
+//              "/app.css", 
+//             "/static/js/bundle/hcbundle.css", 
+//              "/app2.css", 
+//              "/commons.css",
+//             "https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css",
+//             "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css",
+//             "/lib/bootstrap-vue.css",
+//             "https://d2p078bqz5urf7.cloudfront.net/cloud/assets/lib/wcolpick/wcolpick.css"
+//         );
+         head.js(  "lib/jquery.min.js",  "lib/jquery-ui.min.js",  "lib/vue.min.js",
+          "lib/Sortable.min.js",  "lib/vuedraggable.min.js",  "lib/bootstrap-vue.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css",  "lib/bootstrap-vue.css");
+        
+        
+    
+
+//         head.js("https://d2p078bqz5urf7.cloudfront.net/cloud/eb-builder-lib/lib/alertifyjs/alertify.js",
+//             "https://d2p078bqz5urf7.cloudfront.net/cloud/eb-builder-lib/lib/jquery-powertip/jquery.powertip.js",
+//             "https://d2p078bqz5urf7.cloudfront.net/cloud/prod/assets/lib/tinymce/tinymce_5.2.0/tinymce.min.js",
+//             "https://d2p078bqz5urf7.cloudfront.net/cloud/assets/lib/wcolpick/wcolpick.js");
+
+//         head.js("component.js",
+//             "globals.js",
+//             "directive.js",
+//             "style-component.js",
+//             "app.js", "util.js", "core.js", function () {
+//             });
+//   // if (preview) {
+//   //   $("body").addClass("builder-preview");
+//   // }
+    
+
+        head.ready(function () {
+            // Initialize
+            initialize();
+        });
+
+//     };
+//     document.body.appendChild(script);
+</script>
+  <!-- Vue mounts here -->
+<script>
+    var LANDING_PAGE_JSON = {};
+
+    function removeBuilder() {
+        if (window.goBack)
+            window.parent[window.goBack]();
+    }
+
+    function removeLoader() {
+        if (window.remLoader)
+            window.parent[window.remLoader]();
+    }
+
+    function renderView(settings) {
+        if (!settings) settings = {};
+        window.LANDING_PAGE_JSON = settings;
+        window.LANDING_PAGE_JSON.bodySettings = settings.template_body_settings ? JSON.parse(settings.template_body_settings) : getDefaultBodySetting();
+        window.LANDING_PAGE_JSON.fontFamilies = LANDING_PAGE_JSON.bodySettings.fontFamilies || [];
+        if (settings.sections && settings.sections.length > 0) {
+            window.LANDING_PAGE_JSON.sections = settings.sections.map(section => {
+                try {
+                    return JSON.parse(section.builder_json_str.value);
+                } catch (e) {
+                    return JSON.parse(section.builder_json_str);
+                }
+            });
+        } else {
+            window.LANDING_PAGE_JSON.sections = [];
+        }
+
+//         window.LANDING_PAGE_JSON.bodyContent = `
+// <div class="body-container"><div style="display: flex;
+//     justify-content: center;
+//     text-align: center;
+//     align-items: center;
+//     font-size: 20px;
+//     height: 400px;
+//     left: 50%;
+//     top: 40%;
+//     z-index: 999;
+//     width: 100%;">
+//         <div>
+//             <img width="100" height="100" alt="Loading..."
+//                  src="https://d2p078bqz5urf7.cloudfront.net/cloud/dev/assets/img/loader/250-transparent-speed.gif">
+//         <div>Loading...</div>
+//         </div>
+
+//     </div></div>`
+
+        setTimeout(function () {
+            // mountBuilder();
+            // Load template after Vue component is mounted and settings are ready
+            setTimeout(function() {
+                if (window.landingpageBuilderVueRef && window.landingpageBuilderVueRef.loadTemplateIfReady) {
+                    window.landingpageBuilderVueRef.loadTemplateIfReady();
+                }
+            }, 500);
+        }, 200)
+    }
+
+    // Function to fetch KB Settings
+    function fetchSettings(token) {
+        console.log("token", token);
+
+        if (!token) {
+            console.warn("No session token found. Skipping settings fetch.");
+            return;
+        }
+
+        $.ajax({
+            url: "http://localhost:8888" + "/rest/api/panel/v2/proposals",
+            method: "GET",
+            dataType: "json",
+            contentType: "application/json",
+            headers: {
+                authorization: token
+            },
+            xhrFields: {
+    withCredentials: true   // allow cookies to be sent
+  },
+  crossDomain: true,
+            success: function (response) {
+                renderView(response);
+            },
+            error: function (error) {
+                console.error("Error fetching settings:", error);
+            }
+        });
+    }
+
+    function initialize() {
+
+//         $("body").html(`
+
+// <div id="app">
+//     <div class="builder-loader ">
+//         <div>
+//             <img alt="Loading..."
+//                  src="https://d2p078bqz5urf7.cloudfront.net/cloud/dev/assets/img/loader/250-transparent-speed.gif">
+//         </div>
+//         <div>Loading...</div>
+//     </div>
+// </div>
+
+// <div class="mobile-view-notification-popup" style="display: none;">
+//     <div class="mobile-content">
+//         <div class="mobile-header">WE ARE SORRY!</div>
+//         <div class="mobile-body">Sorry, the builder is not supported on this device.</div>
+//     </div>
+// </div>
+
+// <!-- Include external HTML templates -->
+// <div id="builder-container"></div>
+// <div id="content-container"></div>
+// <div id="content-carousel-container"></div>
+// <div id="style-container"></div>
+// <div id="style-components-container"></div>
+
+// 	`);
+
+        // const hostname = window.location.hostname;
+        // const pattern1 = /^.*-dot-.*-dot-accountbox-154605\.appspot\.com$/;
+        // const pattern2 = /^localhost$/;
+
+        // Determine baseUrl based on hostname pattern
+        // if (pattern1.test(hostname)) {
+        // 	baseUrl = "https://qa.engagebay.com";
+        // } else if (pattern2.test(hostname)) {
+        // 	baseUrl = "http://localhost:8080";
+        // } else {
+        // 	console.warn("Unrecognized hostname, setting default baseUrl to localhost");
+        // 	baseUrl = "http://localhost:8080";
+        // }
+
+        // console.log("Design Hostname:", hostname);
+        // console.log("Using baseUrl:", baseUrl);
+
+        $("body").addClass("lp-builder-body");
+        if (preview) {
+            $("body").addClass("builder-preview");
+        }
+
+        // Load external HTML templates
+//   $("#builder-container").load("builder.html");
+//   $("#content-container").load("content.html");
+//   $("#content-carousel-container").load("content-carousal.html");
+//   $("#style-container").load("style.html");
+//   $("#style-components-container").load("style-components.html");
+
+        fetchSettings(window.token);
+
+    };
+</script>
+
+  <!-- Optional fallback message -->
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="app">
+    
+  </div>
+  
+</body>
+</html>

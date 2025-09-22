@@ -1,0 +1,195 @@
+.collection-collapse .nav-item .nav-link[data-toggle="collapse"]::after {
+    content: " \f0d7";
+    font-family: FontAwesome;
+    display: inline;
+    text-align: right;
+    padding-left: 5px;
+}
+
+.collection-collapse .nav-item .nav-link.collapsed[data-toggle="collapse"]::after {
+    content: " \f0da";
+    font-family: FontAwesome;
+    display: inline;
+    text-align: right;
+    padding-left: 5px;
+}
+
+.collection-collapse .nav-item.active .nav-link{
+	background: #ddd;
+}
+
+
+.body-container {
+	padding-bottom: 30px;
+	padding-top: 30px;
+	min-height: 90vh;
+}
+
+.builder-loader {
+	min-height: 80vh;
+	padding-top: 50px;
+}
+
+.collection-list {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.collection-list .each-collection {
+	padding: 20px 10px;
+	background: #fff;
+	border: 1px solid #e0e0e0;
+	border-radius: 5px;
+	box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.03);
+	margin-bottom: 30px;
+	cursor: pointer;
+}
+
+.collection-list .each-collection:hover {
+	background: #fcfcfc;
+}
+
+.collection-list .each-collection .collection-title, .collection-view .collection-details .collection-title
+	{
+	color: #3047EC;
+	margin-bottom: 10px;
+}
+
+.collection-list .each-collection .image-container, .collection-view .collection-details .image-container
+	{
+	flex: 0 0 18%;
+	max-width: 18%;
+	text-align: center;
+	padding-left: 7%;
+	padding-right: 4%;
+}
+
+.collection-view {
+	padding: 25px 25px;
+	background: #ebeef1;
+	border: 1px solid #ebeef1;
+	border-radius: 5px;
+	box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.03);
+}
+
+.collection-view .section-list {
+	margin-top: 20px;
+}
+
+.collection-view .section-list .each-section .section-title {
+	
+}
+
+.collection-view .section-list .each-section {
+	margin-bottom: 20px;
+}
+
+.collection-view .section-list .each-section .article-list {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	background: #fff;
+	border-bottom: 1px solid #f6f6f6;
+	box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.03);
+}
+
+.collection-view .section-list .each-section .article-list .each-article
+	{
+	border-bottom: 1px solid #ddd;
+	padding: 20px;
+	cursor: pointer;
+}
+
+.collection-view .section-list .each-section .article-list .each-article:hover
+	{
+	background: #fbfbfb;
+}
+
+.collection-view .section-list .each-section .article-list .each-article .article-title
+	{
+	color: #3047EC;
+}
+
+.article-view {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	background: #fff;
+	border-bottom: 1px solid #f6f6f6;
+	box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.03);
+	padding: 20px 50px;
+}
+
+.article-title {
+	color: #3047EC;
+}
+
+.article-search-view {
+	
+}
+
+.article-search-view .article-list-item {
+	background: #fff;
+	margin: 15px 0;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	background: #fff;
+	border-bottom: 1px solid #f6f6f6;
+	box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.03);
+	padding: 20px 50px;
+	cursor: pointer;
+}
+
+.article-search-view .article-list-item:hover {
+	background: #fafafa;
+}
+
+.author-profile-image-continer {
+	padding-left: 5px;
+	vertical-align: middle;
+}
+
+.author-profile-image-continer .author-profile-image {
+	width: 32px;
+	height: 32px;
+	vertical-align: bottom;
+	border-radius: 50%;
+	-webkit-box-shadow: 0 0 0 2px white;
+	box-shadow: 0 0 0 2px white;
+	position: relative;
+	vertical-align: middle;
+	margin-left: -5px;
+}
+
+.author-profile-image-continer .author-profile-image-ellipse {
+	width: 32px;
+	display: inline-block;
+	height: 32px;
+	background: #ced3f9;
+	color: #fff;
+	vertical-align: bottom;
+	border-radius: 50%;
+	-webkit-box-shadow: 0 0 0 2px white;
+	box-shadow: 0 0 0 2px white;
+	position: relative;
+	vertical-align: middle;
+	text-align: center;
+	margin-left: -5px;
+	font-size: 18px;
+}
+
+.reated-to-article img {
+	filter: grayscale(100%);
+}
+
+.reated-to-article.reacted_index_1 img:nth-child(1) {
+	filter: grayscale(0%);
+}
+
+.reated-to-article.reacted_index_2 img:nth-child(2) {
+	filter: grayscale(0%);
+}
+
+.reated-to-article.reacted_index_3 img:nth-child(3) {
+	filter: grayscale(0%);
+}
