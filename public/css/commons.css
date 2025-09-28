@@ -1,0 +1,153 @@
+body {
+    background-color: #f6f8f9;
+    color: #43506a;
+    letter-spacing: 0.01em;
+    font-size: 12px;
+}
+
+nav .dropdown-toggle::after {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: .255em;
+    vertical-align: .255em;
+    content: "";
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-bottom: 0;
+    border-left: .3em solid transparent;
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+.section-background-video {
+	display: block;
+    position: absolute;
+    right: 0;
+  	bottom: 0;
+  	width: 100%; 
+  	height: 100%;
+  	boder:none;
+  	object-fit: fill;
+    z-index: 0;
+}
+
+.inline-text-container *{
+	display: inline;
+}
+
+.inline-text-container br{
+	display: none;
+}
+
+btn.dropdown-toggle{
+	text-align: left !important;
+	padding-left: .4em !important;
+}
+
+btn.dropdown-toggle::after {
+    right: .2em;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.video-overlay{
+	position: absolute;
+	height: 100%;
+    width: 100%;
+    z-index: 1;
+    opacity: 1;
+    background: transparent;
+}
+
+.search-group{
+	position: relative;
+}
+
+.search-group i {
+	color: rgba(0, 0, 0, 0.5);
+    font-weight: normal;
+    font-size: 16px;
+    position: absolute;
+    left: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.font-family-default {
+	font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+.font-family-arial {
+	font-family: arial, verdana, sans-serif;
+}
+.font-family-sans-serif {
+	font-family: sans-serif,arial;
+}
+.font-family-verdana {
+	font-family: verdana,arial;
+}
+.font-family-helvetica {
+	font-family: helvetica,arial;
+}
+.font-family-georgia {
+	font-family: georgia,arial;
+}
+.font-family-tahoma {
+	font-family: tahoma,arial;
+}
+.font-family-monospace {
+	font-family: monospace,arial;
+}
+.font-family-times_new_roman {
+	font-family: times new roman,arial;
+}
+.font-family-comic_sans_ms {
+	font-family: comic sans ms,arial;
+}
+.font-family-impact {
+	font-family: impact,arial;
+}
+.font-family-lucida_sans_unicode {
+	font-family: lucida sans unicode,arial;
+}
+.font-family-courier_new {
+	font-family: courier new,arial;
+}
+.font-family-lucida_console {
+	font-family: lucida console,arial;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.inline-text-container * {
+	display: inline;
+}
+
+.align-middle {
+	vertical-align: middle;
+}
+
+.display-table {
+	display: table;
+}
+
+.display-table-cell {
+	display: table-cell;
+}
+
+.flex-direction-column {
+    flex-direction: column !important;
+}
+
+.font-size-11 {
+	font-size: 11px;
+}
+
+.font-size-13 {
+	font-size: 13px;
+}

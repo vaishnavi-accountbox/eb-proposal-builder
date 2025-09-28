@@ -356,14 +356,14 @@ export var utils = {
   removeLineBreaks: function (html) {
     return html.replace(/\n\s*\n/gi, '\n');
   },
-  // initTooltips: function () {
-  //   setTimeout(function () {
-  //     $('*[title]').powerTip({
-  //       placement: 's',
-  //       smartPlacement: true// north-east tooltip position
-  //     });
-  //   }, 100)
-  // }
+  initTooltips: function () {
+    setTimeout(function () {
+      $('*[title]').powerTip({
+        placement: 's',
+        smartPlacement: true// north-east tooltip position
+      });
+    }, 100)
+  }
 };
 
 
@@ -402,7 +402,7 @@ function loadHTMLTypeContentInFrame() {
 	
 }
 // eslint-disable-next-line no-unused-vars
-function getMouseEventCaretRange(evt) {
+export function getMouseEventCaretRange(evt) {
   var range, x = evt.clientX, y = evt.clientY;
     
   // Try the simple IE way first
@@ -437,11 +437,10 @@ function getMouseEventCaretRange(evt) {
   return range;
 }
 // eslint-disable-next-line no-unused-vars
-function selectCursorRange(range) {
+export function selectCursorRange(range) {
   if (range) {
-    	
-    	
-    	var el = document.createElement("span");
+
+    var el = document.createElement("span");
     el.innerHTML = "";
     el.className = 'cursor-localtion';
     /*var frag = document.createDocumentFragment(), node, lastNode;

@@ -1,6 +1,34 @@
 /* eslint-disable */
 import Vue from 'vue'   
 import $ from "jquery";
+import iconTemplate from './components/iconTemplate.vue';
+import NavlistTemplate from './components/navlistTemplate.vue';
+import TextTemplate from './components/textTemplate.vue';
+import RowColumn from './components/rowColumn.vue';
+import SearchTemplate from './components/searchTemplate.vue';
+import Heading3Template from './components/heading3Template.vue';
+import BuilderHtmlContent from './components/builderHtmlContent.vue';
+import { utils } from './app';
+import StyleEditFormFields from './components/styleEditFormFields.vue';
+import FontStyleSettings from './components/fontStyleSettings.vue';
+import HtmlTemplate from './components/htmlTemplate.vue';
+import ButtonTemplate from './components/buttonTemplate.vue';
+import DropdownTemplate from './components/dropdownTemplate.vue';
+import SpaceTemplate from './components/spaceTemplate.vue';
+import VideoTemplate from './components/videoTemplate.vue';
+import PopupTemplate from './components/popupTemplate.vue';
+import NavbarTemplate from './components/navbarTemplate.vue';
+import FormTemplate from './components/formTemplate.vue';
+import SectionVideoBackground from './components/sectionVideoBackground.vue';
+import PageRenderRowColumn from './components/pageRenderRowColumn.vue';
+import Box from './components/box.vue';
+import CollectionList from './components/collectionList.vue';
+import List from './components/list.vue';
+import Cards from './components/cards.vue';
+import Minimal from './components/minimal.vue';
+import Tiles from './components/tiles.vue';
+import CollectionComponent from './components/collectionComponent.vue';
+import ArticleComponent from './components/articleComponent.vue';
 var ENGAGEBAY_VIDEO_TEMPLATE_JSON;
 Vue.component('engagebay-video-templates', {
     props: ['videooptions', 'sele'],
@@ -343,285 +371,24 @@ Vue.component('repository-image-files', {
  *  })
  */
 
-Vue.component('font-style-settings', {
-    props: ['font', 'editelementtype'],
-    template: "#fontStyleSettingsTemplate",
-    data: function () {
-        return {
-            globals: builderGlobals,
-        };
-    },
-    watch: {
+Vue.component('font-style-settings', FontStyleSettings);
 
-        'font.linkColor': function (newVal, oldVal) {
-            if (this.editelementtype == 'body') {
-                utils.bodyLinkColorChanged(this.font.linkColor);
-            }
-        },
+Vue.component('collection-list', CollectionList);
 
-        'font.family': function (newVal, oldVal) {
-            if (this.editelementtype == 'body') {
-                utils.loadFontFamily(this.font.family);
-            }
-        }
+Vue.component('list', List)
 
-    },
+Vue.component('cards', Cards)
 
-    methods: {
+Vue.component('minimal', Minimal)
 
-        fontStyleChanged() {
-            utils.loadFontFamily(this.font.family);
-        }
+Vue.component('tiles', Tiles)
 
-    }
+Vue.component('box', Box)
 
+Vue.component('collection-component', CollectionComponent)
 
-});
-
-Vue.component('collection-list', {
-    template: "#collectionList",
-    props: ['font', 'landingpageprefs'],
-    created: function () {
-
-    },
-})
-
-Vue.component('list', {
-    template: "#list",
-    props: ['font'],
-    created: function () {
-
-    },
-})
-
-Vue.component('cards', {
-    template: "#cards",
-    props: ['font'],
-    created: function () {
-
-    },
-})
-
-Vue.component('minimal', {
-    template: "#minimal",
-    props: ['font'],
-    created: function () {
-
-    },
-})
-
-Vue.component('tiles', {
-    template: "#tiles",
-    props: ['font'],
-    created: function () {
-
-    },
-})
-
-Vue.component('box', {
-    template: "#box",
-    props: ['font'],
-    created: function () {
-
-    },
-})
-
-Vue.component('collection-comp', {
-    template: "#collection",
-    props: ['collectionpagestyle', 'font', 'bodycontent'],
-    created: function () {
-
-    },
-})
-
-Vue.component('article-comp', {
-    template: "#article",
-    props: ['articlepagestyle', 'font', 'bodycontent'],
-    created: function () {
-
-    },
-})
-Vue.component('style-edit-form-fields', {
-    props: ['options', 'font', 'themesettings', 'editelementtype', 'accordion', 'contenttype', 'elementid', 'element', 'viewport'],
-    data: function () {
-        return {
-            globals: builderGlobals,
-            navBrandImagePopup: false
-        };
-    },
-    template: "#styleEditFormFields",
-    created: function () {
-
-    },
-    mounted: function () {
-
-        utils.initTooltips();
-
-    },
-    watch: {
-
-        /*
-         * options : { handler : function(newVal, oldVal) {
-         *
-         * var self= this;
-         *
-         * if(this.editelementtype == 'body') { if(self.options &&
-         * self.options.desktopContentWidth) self.desktopContentWidthRef =
-         * self.options.desktopContentWidth;
-         *
-         * self.bodyLinkColorChanged(self.options.font.linkColor);
-         *  }
-         *  }, deep : true },
-         */
-
-    },
-
-    methods: {
-
-        initValue(json, key, initVal) {
-            try {
-                if (!json[key])
-                    json[key] = initVal;
-            } catch (e) {
-            }
-        },
-
-        showModal(ref) {
-            this.$root.$emit('bv::show::modal', ref);
-        },
-
-        hideModal(ref) {
-            this.$root.$emit('bv::hide::modal', ref);
-        },
-
-        /*
-            * updateFontFamily(newFamily){ this.options['font']['family'] =
-            * newFamily; },
-            */
-
-        isContentHasHeightProperity() {
-
-            if (!this.contenttype || ['text', 'heading3', 'divider', 'icon'].indexOf(this.contenttype) > -1)
-                return false;
-
-            return true;
-
-        },
-
-        isContentHasWidthProperity() {
-
-            if (!this.contenttype || ['verticaldivider', 'icon'].indexOf(this.contenttype) > -1)
-                return false;
-
-            return true;
-
-        },
-
-        borderWidthChanged(newVal) {
-
-            if (this.contenttype && this.contenttype == "verticaldivider") {
-                this.options['desktop'].width = Number(newVal) + 10;
-                this.options['mobile'].width = Number(newVal) + 10;
-            }
-
-            landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
-
-        },
-
-        viewportVisibilityChanged(viewport) {
-
-            // landingpageBuilderVueRef.activeSettingsElement
-            // Check element positions
-
-        },
-
-        getPageSection: function () {
-
-            return landingpageBuilderVueRef.landingpagePrefs.sections;
-
-            /*var arr = [];
-            landingpageBuilderVueRef.landingpagePrefs.sections.forEach(function(
-                    section) {
-                arr.push(section.id);
-            });
-            return arr;*/
-        },
-
-        editBodyContentWidth: function (options, actionType) {
-
-            var newVal;
-
-            try {
-                if (actionType == "substract") {
-                    var newVal = Number(this.options.desktopContentWidth) - 50;
-                } else
-                    var newVal = Number(this.options.desktopContentWidth) + 50;
-
-                if (newVal > 0) {
-                    this.options.desktopContentWidth = parseNumber(newVal);
-                }
-
-                landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
-
-            } catch (e) {
-            }
-
-        },
-
-        addNewAction(index) {
-
-            this.options.action_list.splice(index, 0, {
-                text: 'action',
-                link: ''
-            });
-
-        },
-        removeAction(remaction) {
-            this.options.action_list = this.options.action_list.filter(function (action) {
-                return action != remaction;
-            });
-
-        },
-
-        alignContent(position) {
-
-            var self = this;
-            landingpageBuilderVueRef.landingpagePrefs.sections.forEach(function (
-                section) {
-
-                section.columns[0].contents.forEach(function (content) {
-
-                    if (content.id != self.elementid)
-                        return;
-
-                    var viewport = landingpageBuilderVueRef.activeViewport;
-                    var sectionHeight = $('#' + section.columns[0].id + '.' + viewport).height(),
-                        sectionWidth = $('#' + section.columns[0].id + '.' + viewport).width();
-                    var contentHeight = $('#' + content.id).height(), contentWidth = $('#' + content.id).width();
-
-                    if (position == "h-left") {
-                        self.options[viewport].left = 0;
-                    } else if (position == "h-center") {
-                        self.options[viewport].left = (sectionWidth / 2) - (contentWidth / 2);
-                    } else if (position == "h-right") {
-                        self.options[viewport].left = sectionWidth - contentWidth;
-                    } else if (position == "v-top") {
-                        self.options[viewport].top = 0;
-                    } else if (position == "v-center") {
-                        self.options[viewport].top = (sectionHeight / 2) - (contentHeight / 2);
-                    } else if (position == "v-bottom") {
-                        self.options[viewport].top = sectionHeight - contentHeight;
-                    }
-
-                });
-
-            });
-
-        }
-
-    }
-
-});
+Vue.component('article-component', ArticleComponent)
+Vue.component('style-edit-form-fields', StyleEditFormFields);
 
 Vue.component('fa-icon-library', {
     props: ['option'],
@@ -674,10 +441,7 @@ Vue.component('content-common-settings', {
     template: "#contentCommonSettingsTemplate",
 });
 
-Vue.component('builder-html-content', {
-    props: ['prefs'],
-    template: "#builderHTMLContent",
-});
+Vue.component('builder-html-content', BuilderHtmlContent);
 
 Vue.component("blockTemplate", {
     props: ['content', 'viewport', 'renderby'],
@@ -691,11 +455,7 @@ Vue.component("imageTemplate", {
     methods: {}
 });
 
-Vue.component("iconTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentIconTemplate',
-    methods: {}
-});
+Vue.component("iconTemplate", iconTemplate);
 
 Vue.component("socialTemplate", {
     props: ['content', 'viewport', 'renderby'],
@@ -713,259 +473,36 @@ Vue.component("verticaldividerTemplate", {
     template: '#contentVerticalDividerTemplate'
 });
 
-Vue.component("textTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    data: function () {
-        return {
-            clonedText: "",
-        };
-    },
-    created: function () {
-        this.clonedText = this.content.options.text;
-    },
-    template: '#contentTextTemplate',
-});
+Vue.component("textTemplate", TextTemplate);
 
-Vue.component("heading3Template", {
-    props: ['content', 'viewport', 'renderby'],
-    data: function () {
-        return {
-            clonedText: "",
-        };
-    },
-    created: function () {
-        this.clonedText = this.content.options.text;
-    },
-    template: '#contentHeading3Template',
-});
+Vue.component("heading3Template", Heading3Template);
 
 
-Vue.component("htmlTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentHTMLTemplate'
-});
+Vue.component("htmlTemplate", HtmlTemplate);
 
-Vue.component("buttonTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentButtonTemplate'
-});
-Vue.component("dropdownTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentDropdownTemplate',
-    methods: {}
-});
+Vue.component("buttonTemplate", ButtonTemplate);
+Vue.component("dropdownTemplate", DropdownTemplate);
 
-Vue.component("spaceTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentSpaceTemplate'
-});
+Vue.component("spaceTemplate", SpaceTemplate);
 
-Vue.component("videoTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentVideoTemplate',
-});
-Vue.component("formTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentFormTemplate'
-});
-Vue.component("popupTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentPopupTemplate'
-});
+Vue.component("videoTemplate", VideoTemplate);
+Vue.component("formTemplate", FormTemplate);
+Vue.component("popupTemplate", PopupTemplate);
 
-Vue.component("navbarTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentNavbarTemplate'
-});
+Vue.component("navbarTemplate", NavbarTemplate);
 
-Vue.component("section-video-background", {
-    props: ['video', 'renderby'],
-    template: '#secctionVideoBackgroundTemplate',
-    methods: {
-
-        getVideoType() {
-            return "video/" + this.video.url.split('.').slice(-1)[0]
-        },
-
-        getIframeVideoSrcURL() {
-
-            if (this.renderby == 'builder') {
-
-                if (this.video.type == 'youtube')
-                    // return '//www.youtube.com/embed/'+ this.video.url +
-                    // '?mute=1&autoplay=0&showinfo=0&controls=0';
-                    return '//www.youtube.com/embed/' + this.video.url + '?mute=1&rel=0&loop=1&modestbranding=1&showinfo=0&controls=0&iv_load_policy=3&autohide=1&autoplay=0&disablekb=1&fs=0&html5=1&enablejsapi=1';
-
-                else if (this.video.type == 'vimeo')
-                    return 'https://player.vimeo.com/video/' + this.video.url + '?background=1&muted=1&autoplay=0&loop=1&badge=0&byline=0&title=0&portrait=0&transparent=false';
-
-            } else {
-
-                if (this.video.type == 'youtube')
-                    // return '//www.youtube.com/embed/'+ this.video.url +
-                    // '?mute=1&autoplay=0&showinfo=0&controls=0';
-                    return '//www.youtube.com/embed/' + this.video.url + '?mute=1&rel=0&loop=1&modestbranding=1&showinfo=0&controls=0&iv_load_policy=3&autohide=1&autoplay=1&disablekb=1&fs=0&html5=1&enablejsapi=1';
-
-                else if (this.video.type == 'vimeo')
-                    return 'https://player.vimeo.com/video/' + this.video.url + '?background=1&muted=1&autoplay=1&loop=1&badge=0&byline=0&title=0&portrait=0&transparent=false';
+Vue.component("section-video-background", SectionVideoBackground);
 
 
-            }
+Vue.component("page-render-row-column", PageRenderRowColumn);
 
+Vue.component("row-column", RowColumn);
 
-        }
+Vue.component("bnavbarTemplate", NavbarTemplate);
 
-    }
-});
+Vue.component("navlistTemplate", NavlistTemplate);
 
-
-Vue.component("page-render-row-column", {
-    props: ['columns'],
-    template: '#builderPageRenderRowColumn',
-    methods: {
-        getColumnClassNameWithoutViewport(column) {
-
-            console.log('column.size', column.size);
-            return (!column.auto_width && column.size > 0) ? 'col-md-' + column.size : 'col-md';
-
-        }
-    }
-});
-
-Vue.component("row-column", {
-    props: ['columns', 'viewport'],
-    template: '#rowColumnTemplate',
-    methods: {
-
-        activateSelectedElement: function ($event, editElement, elementType) {
-            landingpageBuilderVueRef.activateSelectedElement($event, editElement, elementType);
-        },
-        activateSettingsElement: function ($event, editElement, elementType) {
-            landingpageBuilderVueRef.activateSettingsElement($event, editElement, elementType);
-        },
-
-        getContentName(contentType) {
-
-            var contentName = contentType;
-            getBuilderDefaultSettings().contents.forEach(function (content) {
-                if (content.type == contentType)
-                    contentName = content.primary_head;
-            });
-            return contentName;
-
-        },
-
-        checkAnyColumnHasContent(columns) {
-            var hasContent = false;
-            columns.forEach(function (column) {
-                if (column.contents && column.contents.length > 0)
-                    hasContent = true;
-            });
-            return hasContent;
-        },
-
-        onAddContent(event, column) {
-
-            var self = this;
-
-            var refContent = column.contents[event.newIndex];
-            if (!refContent || refContent.type != 'block' || !refContent.ask_column_confirmation)
-                return;
-
-            refContent.ask_column_confirmation = false;
-            delete refContent["ask_column_confirmation"];
-
-            // Show a modal popup
-            landingpageBuilderVueRef.modalPopup.modalType = 'columnConfirmation';
-            landingpageBuilderVueRef.modalPopup.showModal = true;
-            landingpageBuilderVueRef.modalPopup.heading = "Select Columns";
-            landingpageBuilderVueRef.modalPopup.modalData = {
-                columns: 1
-            };
-            landingpageBuilderVueRef.modalPopup.callback = function (data) {
-
-                if (landingpageBuilderVueRef.modalPopup.modalData.columns == 1)
-                    return;
-
-                for (var i = 0; i < landingpageBuilderVueRef.modalPopup.modalData.columns; i++) {
-                    if (refContent.columns.length < (i + 1))
-                        refContent.columns.push(getDefaultColumnOptions());
-                }
-
-            };
-
-        },
-
-        cloneContent(event, column, content) {
-            landingpageBuilderVueRef.cloneContent(event, column, content);
-        },
-
-        removeContent(event, column, remContent) {
-            landingpageBuilderVueRef.removeContent(event, column, remContent)
-        },
-
-        getColumnClassName(column, viewport) {
-
-            if (viewport && viewport == 'mobile')
-                return "";
-
-            return (!column.auto_width && column.size > 0) ? 'col-md-' + column.size : 'col';
-
-        },
-
-        activeElementId() {
-            try {
-                return landingpageBuilderVueRef.activeElementId;
-            } catch (e) {
-                return "";
-            }
-
-        },
-
-        activateSelectedElement(event, content, type) {
-            landingpageBuilderVueRef.activateSelectedElement(event, content, type);
-        },
-
-        onMove: function () {
-
-            try {
-                tinymce.editors.forEach(function (editor) {
-                    return editor.hide();
-                });
-            } catch (e) {
-            }
-
-        },
-        onMoveEnd: function () {
-
-            landingpageBuilderVueRef.addState(this.landingpagePrefs);
-
-            try {
-                tinymce.editors.forEach(function (editor) {
-                    return editor.show();
-                });
-            } catch (e) {
-            }
-
-        },
-
-    }
-});
-
-Vue.component("bnavbarTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentNavbarTemplate'
-});
-
-Vue.component("navlistTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentNavbarListTemplate'
-});
-
-Vue.component("searchTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentSearchTemplate'
-});
+Vue.component("searchTemplate", SearchTemplate);
 
 Vue.component("carousalTemplate", {
     props: ['content', 'viewport', 'renderby'],

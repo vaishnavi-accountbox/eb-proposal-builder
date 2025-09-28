@@ -92,7 +92,7 @@
 <script>
 import { utils } from "../app"
 import { builderGlobals } from "../global";
-import '../../public/lib/wcolpick/wcolpick.css';
+// import '../../public/lib/wcolpick/wcolpick.css';
 export default {
   name: 'fontStyleSettings',
   props: ['font', 'editelementtype'],

@@ -1,0 +1,38 @@
+body.list-style .collection-section-container {
+    /* 	background: #fafafa; */
+    }
+    
+    body.list-style .collection-list {
+        margin-top: 20px;
+        margin-bottom: 20px;	
+    }
+    
+    body.list-style .collection-list .each-collection {
+        padding: 20px 10px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px #eaf0f6;
+        margin-bottom: 30px;
+        cursor: pointer;
+        transition: all .2s ease-in-out;
+    }
+    
+    body.list-style .collection-list .each-collection:hover {
+        box-shadow: 0 10px 15px -5px rgb(51 71 91 / 12%);
+        transform: scale(1.009);
+    }
+    
+    body.list-style .collection-list .each-collection .collection-title
+        {
+        color: #7d8dff;
+        margin-bottom: 5px;
+    }
+    
+    body.list-style .collection-list .each-collection .image-container
+        {
+        flex: 0 0 12%;
+        max-width: 12%;
+        text-align: center;
+        padding-left: 4%;
+        padding-right: 2%;
+    }

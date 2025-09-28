@@ -22,7 +22,9 @@
 											<span>Column {{index+1}}</span>
 										</div>
 										<div class="col text-right no-gutter p-0" style="max-width: 50px;">
-											<span class="cursor-pointer pl-1" @click="removeColumn($event, index)"><i class="fa fa-remove" title="Remove Column" style="display: inline;"></i> </span> <span class="cursor-pointer pl-1" @click="cloneColumn($event, column)"><i class="fa fa-clone" title="Clone Column" style="display: inline;"></i> </span> <span class="accordion-toggle-body cursor-pointer pl-1"><i class="fa fa-angle-down accordion-open"></i><i class="fa fa-angle-right accordion-close"></i></span>
+											<span class="cursor-pointer pl-1" @click="removeColumn($event, index)"><i class="fa fa-remove" title="Remove Column" style="display: inline;"></i> </span>
+											<span class="cursor-pointer pl-1" @click="cloneColumn($event, column)"><i class="fa fa-clone" title="Clone Column" style="display: inline;"></i> </span>
+											<span class="accordion-toggle-body cursor-pointer pl-1"><i class="fa fa-angle-down accordion-open"></i><i class="fa fa-angle-right accordion-close"></i></span>
 										</div>
 										
 									</div>
@@ -87,11 +89,11 @@
 </div>
 							
 </template>
-<script>
-import { utils } from '../app';
-import $ from "jquery";
-import { getDefaultColumnOptions, landingpageBuilderVueRef } from '../global';
 
+<script>
+import $ from "jquery";
+import { utils } from "../app";
+import { getDefaultColumnOptions } from "../global";
 export default {
   name: 'columnSettings',
   props : [ 'columns' ],
@@ -107,7 +109,7 @@ export default {
 			
       this.columns.push(newColumn);
 			
-      landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
+      window.landingpageBuilderVueRef.addState(window.landingpageBuilderVueRef.landingpagePrefs);
 			
     },
 		
@@ -123,7 +125,7 @@ export default {
         .splice(this.columns
           .indexOf(column) + 1, 0, newColumn);
 			
-      landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
+      window.landingpageBuilderVueRef.addState(window.landingpageBuilderVueRef.landingpagePrefs);
 			
     },
 		
@@ -141,7 +143,7 @@ export default {
 								
             self.columns.splice(index, 1);
 
-            landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
+            window.landingpageBuilderVueRef.addState(window.landingpageBuilderVueRef.landingpagePrefs);
 
           }, null, 'Delete', 'Cancel');
 			
@@ -149,5 +151,4 @@ export default {
     }
   }
 }
-
 </script>

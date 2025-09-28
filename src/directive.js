@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Vue from 'vue'   
 import {utils} from "@/app";  
+import {getMouseEventCaretRange, selectCursorRange} from './app.js'
 import '../public/lib/wcolpick/wcolpick.js'
 Vue.filter('makeTitle', function (value) {
     if (!value) return '';
@@ -57,7 +58,7 @@ Vue.mixin({
 		
 		getViewportType(){
 			try {
-				return landingpageBuilderVueRef.activeViewport;
+				return window.landingpageBuilderVueRef.activeViewport;
 			} catch (e) {
 				return undefined;
 			}
@@ -184,9 +185,9 @@ Vue.mixin({
 			   if(stylesArr.indexOf('bodyWidth') > -1){
 				   
 				  try {
-					  var widthType = landingpageBuilderVueRef.landingpagePrefs.bodySettings.width_type;
+					  var widthType = window.landingpageBuilderVueRef.landingpagePrefs.bodySettings.width_type;
 					   if(widthType == 'custom'){
-						   styles.width = landingpageBuilderVueRef.landingpagePrefs.bodySettings.desktopContentWidth + 'px'
+						   styles.width = window.landingpageBuilderVueRef.landingpagePrefs.bodySettings.desktopContentWidth + 'px'
 					   }
 					   if(widthType == 'full_width'){
 						   styles.width = '100%';
@@ -585,7 +586,7 @@ Vue.directive('input-field', {
 				return;
 			
 			console.log('adding state in direc');
-			landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
+			window.landingpageBuilderVueRef.addState(window.landingpageBuilderVueRef.landingpagePrefs);
 			
 		});
 
@@ -827,7 +828,7 @@ Vue
 															} catch (e) {
 															}
 															
-															landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
+															window.landingpageBuilderVueRef.addState(window.landingpageBuilderVueRef.landingpagePrefs);
 														});
 
 											}

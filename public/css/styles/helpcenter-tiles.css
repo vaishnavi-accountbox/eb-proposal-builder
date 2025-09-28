@@ -1,0 +1,39 @@
+body.tiles-style .collection-section-container {
+    /* 	background: #fafafa; */
+    }
+    
+    body.tiles-style .collection-list {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    
+    body.tiles-style .collection-list .each-collection {
+        padding: 20px 10px;
+        background: #fff;
+        border: 1px solid #f9f7f7;
+        border-radius: 5px;
+        box-shadow: 0 0 10px #eaf0f6;
+        cursor: pointer;
+        text-align: center;
+        height: 100%;
+        transition: all .2s ease-in-out;
+    }
+    
+    body.tiles-style .collection-list .each-collection:hover {
+        box-shadow: 0 10px 15px -5px rgb(51 71 91 / 12%);
+        transform: scale(1.014);
+    }
+    
+    body.tiles-style .collection-list .each-collection .collection-title
+        {
+        color: #7d8dff;
+        margin-bottom: 10px;
+    /* 	text-align: center; */
+    }
+    
+    body.tiles-style .collection-list .each-collection .image-container img{
+        width: 65px;
+        height: auto;
+        margin-bottom: 20px;
+        margin-top: 10px;
+    }

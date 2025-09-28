@@ -114,7 +114,7 @@
 <script>
 import '../../public/commons.css';
 export default {
-  name: 'bnavbarTemplate',
+  name: 'navbarTemplate',
   props: ['content', 'viewport', 'renderby'],
 }
 </script>

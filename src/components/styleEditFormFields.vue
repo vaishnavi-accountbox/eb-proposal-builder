@@ -1069,7 +1069,7 @@
 <script>
 import { utils } from '../app';
 import fontStyleSettings from './fontStyleSettings.vue';
-import { builderGlobals, landingpageBuilderVueRef } from '../global';
+import { builderGlobals } from '../global';
 import '../../public/app.css';
 import $ from "jquery";
 
@@ -1159,23 +1159,23 @@ export default {
         this.options['mobile'].width = Number(newVal) + 10;
       }
 
-      landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
+      window.landingpageBuilderVueRef.addState(window.landingpageBuilderVueRef.landingpagePrefs);
 
     },
 
     viewportVisibilityChanged(viewport) {
 
-      // landingpageBuilderVueRef.activeSettingsElement
+      // window.landingpageBuilderVueRef.activeSettingsElement
       // Check element positions
 
     },
 
     getPageSection: function () {
 
-      return landingpageBuilderVueRef.landingpagePrefs.sections;
+      return window.landingpageBuilderVueRef.landingpagePrefs.sections;
 
       /*var arr = [];
-            landingpageBuilderVueRef.landingpagePrefs.sections.forEach(function(
+            window.landingpageBuilderVueRef.landingpagePrefs.sections.forEach(function(
                     section) {
                 arr.push(section.id);
             });
@@ -1196,7 +1196,7 @@ export default {
           this.options.desktopContentWidth = parseNumber(newVal);
         }
 
-        landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
+        window.landingpageBuilderVueRef.addState(window.landingpageBuilderVueRef.landingpagePrefs);
 
       } catch (e) {
       }
@@ -1221,7 +1221,7 @@ export default {
     alignContent(position) {
 
       var self = this;
-      landingpageBuilderVueRef.landingpagePrefs.sections.forEach(function (
+      window.landingpageBuilderVueRef.landingpagePrefs.sections.forEach(function (
         section) {
 
         section.columns[0].contents.forEach(function (content) {
@@ -1229,7 +1229,7 @@ export default {
           if (content.id != self.elementid)
             return;
 
-          var viewport = landingpageBuilderVueRef.activeViewport;
+          var viewport = window.landingpageBuilderVueRef.activeViewport;
           var sectionHeight = $('#' + section.columns[0].id + '.' + viewport).height(),
             sectionWidth = $('#' + section.columns[0].id + '.' + viewport).width();
           var contentHeight = $('#' + content.id).height(), contentWidth = $('#' + content.id).width();

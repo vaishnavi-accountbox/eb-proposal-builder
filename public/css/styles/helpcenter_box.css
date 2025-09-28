@@ -1,0 +1,28 @@
+.new.each-collection .author-profile-image-continer{
+    padding-left: 0px !important;
+}
+
+.new.each-collection{
+    border: 1px solid #e6e6e6 !important;
+    border-radius: 8px !important;
+    padding: 24px 24px !important;
+    background: #fff;
+}
+
+.new-each-collection-body{
+    display: flex;
+    column-gap: 20px;
+    align-items: start;
+}
+.new-each-collection-svg{
+    padding: 12px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+}
+
+.collection-title.hc-global-title.collection-view{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 13vw;
+}

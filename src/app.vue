@@ -17,7 +17,7 @@
     </div>
   </div>
   <div v-else>
-    <builder></builder>
+    <builder ref="builder"></builder>
   </div>
 </template>
 
@@ -36,6 +36,17 @@ export default {
     return {
       loading: true
     };
+  },
+  watch: {
+    loading(newVal) {
+      if (newVal === false) {
+        this.$nextTick(() => {
+          // builder is mounted now
+          window.landingpageBuilderVueRef = this.$refs.builder
+          console.log("✅ Builder ready:", window.landingpageBuilderVueRef)
+        })
+      }
+    }
   },
   mounted() {
     var self = this;

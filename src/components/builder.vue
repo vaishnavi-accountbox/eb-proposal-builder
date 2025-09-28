@@ -298,17 +298,17 @@
 
 
 							<div class="text-center mb-3">
-								<img class="cursor-pointer" width="100%" height="auto" 
+								<img class="cursor-pointer" width="100%" height="auto" :src="'http://localhost:8080' + '/static/img/preview.png'"
 									 @click="selectedTheme.active='theme1'" :style="{'border' : (selectedTheme.active=='theme1') ? '2px solid blue' : '1px solid #ddd'}"/>
 							</div>
 
 							<div class="text-center mb-3">
-								<img class="cursor-pointer" width="100%" height="auto" 
+								<img class="cursor-pointer" width="100%" height="auto" :src="'http://localhost:8080' + '/static/img/preview-02.jpg'"
 									 @click="selectedTheme.active='theme2'" :style="{'border' : (selectedTheme.active=='theme2') ? '2px solid blue' : '1px solid #ddd'}"/>
 							</div>
 
 							<div class="text-center mb-3">
-								<img class="cursor-pointer" width="100%" height="auto" 
+								<img class="cursor-pointer" width="100%" height="auto" :src="'http://localhost:8080' + '/static/img/preview.jpg-01.jpg'"
 									 @click="selectedTheme.active='theme3'" :style="{'border' : (selectedTheme.active=='theme3') ? '2px solid blue' : '1px solid #ddd'}"/>
 							</div>
 
@@ -356,7 +356,7 @@
 													   :class="[{empty: !landingpagePrefs.sections.length}, getFontFamilyClassName(landingpagePrefs.bodySettings.font)]"
 													   data-empty-template="No section here. Drag section from right."
 													   :list="landingpagePrefs.sections"
-													   :options="{group: {name: 'section', put: true}, sort: true, handle: 'i.actions.section-move'}"
+													   :options="{group: {name: 'section', put: ['section']}, sort: true, handle: 'i.actions.section-move'}"
 													   @add="onAddSection" @start="onMove" @end="onMoveEnd"
 													   ref="emailElements">
 
@@ -426,22 +426,22 @@
 																	:font="landingpagePrefs.bodySettings.font"
 															>
 															</landingpagePrefs.bodySettings.themeSettings.collectionListStyle>
-															<collection-comp
+															<collection-component
 																	:font="landingpagePrefs.bodySettings.font"
 																	:bodycontent="landingpagePrefs.bodyContent"
 																	:collectionpagestyle="landingpagePrefs.bodySettings.themeSettings.collectionPageStyle"
 																	v-if="accordion.active == 'collection'"
 															>
 
-															</collection-comp>
-															<article-comp
+															</collection-component>
+															<article-component
 																	:font="landingpagePrefs.bodySettings.font"
 																	:bodycontent="landingpagePrefs.bodyContent"
 																	v-if="accordion.active == 'article'"
 																	:articlepagestyle="landingpagePrefs.bodySettings.themeSettings.articlePageStyle"
 															>
 
-															</article-comp>
+															</article-component>
 
 
 														</div>
@@ -677,9 +677,16 @@
 
 <script>
 import { PARENT_UNLOAD_CONFIRM } from '../app';
-import { getBuilderDefaultSettings, getDefaultColumnOptions, LANDING_PAGE_JSON, landingpageBuilderVueRef, removeBuilder } from '../global';
+import { getBuilderDefaultSettings, getDefaultBodySetting, getDefaultColumnOptions, LANDING_PAGE_JSON, removeBuilder, token } from '../global';
 import {utils} from '../app';
 import $ from "jquery";
+import '../../public/css/styles/helpcenter_box.css';
+import '../../public/css/styles/helpcenter-cards.css';
+import '../../public/css/styles/helpcenter-list.css';
+import '../../public/css/styles/helpcenter-minimal.css';
+import '../../public/css/styles/helpcenter-tiles.css';
+import '../../public/css/helpcenter.css';
+import '../../public/app.css';
 import '../../public/app2.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "font-awesome/css/font-awesome.min.css";
@@ -736,19 +743,143 @@ export default {
       },
       deep : true
     },
+    'accordion.active': {
+      handler: function (newVal, oldVal) {
+        console.log(newVal, oldVal);
+		var self = this;
+        self.landingpagePrefs.bodyContent = `
+<div class="body-container"><div style="display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 20px;
+    height: 400px;
+    left: 50%;
+    top: 40%;
+    z-index: 999;
+    width: 100%;">
+        <div>
+            <img width="100" height="100" alt="Loading..."
+                 src="https://d2p078bqz5urf7.cloudfront.net/cloud/dev/assets/img/loader/250-transparent-speed.gif">
+        <div>Loading...</div>
+        </div>
+        
+    </div></div>`
+        const desc = self.landingpagePrefs.bodySettings.themeSettings.collectionPageStyle.contentDescVisibility;
+        const toc = self.landingpagePrefs.bodySettings.themeSettings.articlePageStyle.tableContentsVisibility;
+        if(newVal == "list")
+          newVal = self.landingpagePrefs.bodySettings.themeSettings.collectionListStyle;
+        $.ajax({
+          url: "http://localhost:8080" + "/template/body?template=" + newVal + "&desc=" + desc + "&toc=" + toc,
+          method: "GET",
+          contentType: "html/text",
+          headers: {
+            Authorization: `${token}`
+          },
+          success: function (response) {
+            LANDING_PAGE_JSON.bodyContent = response;
+            self.landingpagePrefs.bodyContent = response;
+          },
+          error: function (error) {
+            console.error("Error fetching settings:", error);
+          }
+        });
+      }
+    },
+    'selectedTheme.active': {
+      handler: function (newVal, oldVal) {
+        this.closesettingsBlock();
+        console.log(newVal, oldVal);
+        $.ajax({
+          type: "GET",
+          url: "http://localhost:8082" + "/themes/" + newVal + ".json",
+          dataType: 'json',
+          contentType: "application/json",
+          success: function (response) {
+            var prefs = {
+              sections: response.sections.map(section => {
+                try {
+                  return JSON.parse(section.builder_json_str.value);
+                } catch (e) {
+                  return JSON.parse(section.builder_json_str);
+                }
+              }),
+              bodySettings: response.template_body_settings ? JSON.parse(response.template_body_settings) : getDefaultBodySetting(),
+              fontFamilies: LANDING_PAGE_JSON.fontFamilies,
+              bodyContent : LANDING_PAGE_JSON.bodyContent,
+            }
+            window.landingpageBuilderVueRef.landingpagePrefs = utils.rearrangeDeprecatedStyles(prefs);
+          },
+        })
+      },
+    },
+    'landingpagePrefs.bodySettings.themeSettings.collectionListStyle': {
+      handler: function (newVal, oldVal) {
+        console.log(newVal, oldVal);
+		var self = this;
+        self.landingpagePrefs.bodyContent = `
+<div class="body-container"><div style="display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 20px;
+    height: 400px;
+    left: 50%;
+    top: 40%;
+    z-index: 999;
+    width: 100%;">
+        <div>
+            <img width="100" height="100" alt="Loading..."
+                 src="https://d2p078bqz5urf7.cloudfront.net/cloud/dev/assets/img/loader/250-transparent-speed.gif">
+            <div>Loading...</div>
+        </div>
+        
+    </div></div>`
+        $.ajax({
+          url: "http://localhost:8080" + "/template/body?template=" + newVal,
+          method: "GET",
+          contentType: "html/text",
+          headers: {
+            Authorization: `${token}`
+          },
+          success: function (response) {
+            LANDING_PAGE_JSON.bodyContent = response;
+            self.landingpagePrefs.bodyContent = response;
+          },
+          error: function (error) {
+            console.error("Error fetching settings:", error);
+          }
+        });
+      }
+    },
 				
   },
   created: function () {
-        
+	var self = this;
+      
+    $.ajax({
+      url: "http://localhost:8080" + "/template/body?template=" + self.landingpagePrefs.bodySettings.themeSettings.collectionListStyle,
+      method: "GET",
+      contentType: "html/text",
+      headers: {
+        Authorization: `${token}`
+      },
+      success: function (response) {
+        LANDING_PAGE_JSON.bodyContent = response;
+        self.landingpagePrefs.bodyContent = response;
+      },
+      error: function (error) {
+        console.error("Error fetching settings:", error);
+      }
+    });
 				
     this.addState(this.landingpagePrefs);
 				
-    var self = this;
 				
     window.addEventListener('keyup', function(event) {
 					 
 					 if(KEY_DOWN_EVENT_TRIGGER_STATE[event.keyCode]){
-						 landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
+						 window.landingpageBuilderVueRef.addState(window.landingpageBuilderVueRef.landingpagePrefs);
 					 }
 				 });
 				
@@ -767,14 +898,14 @@ export default {
 			    	 if (event.keyCode == 90 && event.ctrlKey)
 			            {
 			                console.log('ctrl Z');
-			                landingpageBuilderVueRef.undo();
+			                window.landingpageBuilderVueRef.undo();
 			            }
 			    	 
 			    	// redo event triggered
 			    	 if (event.keyCode == 89 && event.ctrlKey)
 			            {
 			    		 console.log('ctrl Y');
-			    		 landingpageBuilderVueRef.redo();
+			    		 window.landingpageBuilderVueRef.redo();
 			            }
 			    	
 			    	
@@ -1098,7 +1229,7 @@ export default {
         return;
 					
       var formattedSections = [];
-      var builderSections = landingpageBuilderVueRef.landingpagePrefs.sections;
+      var builderSections = window.landingpageBuilderVueRef.landingpagePrefs.sections;
       for (var i = 0; i < builderSections.length; i++) {
         var section = builderSections[i];
         formattedSections.push({
@@ -1108,8 +1239,8 @@ export default {
         });
       }
 					
-      var bodySettings = landingpageBuilderVueRef.landingpagePrefs.bodySettings;
-      bodySettings.fontFamilies = utils.getUsedFontFamilies(landingpageBuilderVueRef.landingpagePrefs);
+      var bodySettings = window.landingpageBuilderVueRef.landingpagePrefs.bodySettings;
+      bodySettings.fontFamilies = utils.getUsedFontFamilies(window.landingpageBuilderVueRef.landingpagePrefs);
 					
       LANDING_PAGE_JSON.sections = formattedSections;
       LANDING_PAGE_JSON.template_body_settings = JSON.stringify(bodySettings);
@@ -1655,7 +1786,7 @@ export default {
     /*updateSectionHeightFromContent(sectionId, content, viewport){
 					
 					// Check if column height less than content height
-					  var section = landingpageBuilderVueRef.landingpagePrefs.sections.find(function(
+					  var section = window.landingpageBuilderVueRef.landingpagePrefs.sections.find(function(
 								sect) {
 							return sect.id == sectionId;
 						});
@@ -1673,3 +1804,199 @@ export default {
   components : {}
 }
 </script>
+
+<style>
+
+		.container {
+			width: 100%;
+			max-width: 960px;
+			padding-right: 15px;
+			padding-left: 15px;
+			margin-right: auto;
+			margin-left: auto;
+		}
+
+		/*.row {*/
+		/*	display: -ms-flexbox;*/
+		/*	display: flex;*/
+		/*	-ms-flex-wrap: wrap;*/
+		/*	flex-wrap: wrap;*/
+		/*	margin-right: -15px;*/
+		/*	margin-left: -15px;*/
+		/*}*/
+		/*.col-md {*/
+		/*	-ms-flex-preferred-size: 0;*/
+		/*	flex-basis: 0;*/
+		/*	-ms-flex-positive: 1;*/
+		/*	flex-grow: 1;*/
+		/*	max-width: 100%;*/
+		/*	position: relative;*/
+		/*	width: 100%;*/
+		/*	padding-right: 15px;*/
+		/*	padding-left: 15px;*/
+		/*}*/
+
+		/*.col-md-10 {*/
+		/*	-ms-flex: 0 0 83.333333%;*/
+		/*	flex: 0 0 83.333333%;*/
+		/*	max-width: 83.333333%;*/
+		/*	position: relative;*/
+		/*	width: 100%;*/
+		/*	padding-right: 15px;*/
+		/*	padding-left: 15px;*/
+		/*}*/
+
+		.tiles-style .collection-list, .list-style .collection-list, .cards-style .collection-list, .minimal-style .collection-list {
+			margin-top: 20px;
+			margin-bottom: 20px;
+		}
+
+		.list-style .collection-list .each-collection {
+			padding: 30px 10px;
+			background: #fff;
+			border-radius: 5px;
+			box-shadow: 0 0 10px #eaf0f6;
+			margin-bottom: 30px;
+			cursor: pointer;
+			transition: all .2s ease-in-out;
+		}
+
+		.cards-style .collection-list .each-collection .image-container {
+			flex: 0 0 18%;
+			max-width: 18%;
+			text-align: center;
+			padding-left: 7% !important;
+			padding-right: 4% !important;
+		}
+
+		.tiles-style .collection-list .each-collection {
+			padding: 20px 10px;
+			background: #fff;
+			border: 1px solid #f9f7f7;
+			border-radius: 5px;
+			box-shadow: 0 0 10px #eaf0f6;
+			cursor: pointer;
+			text-align: center;
+			height: 100%;
+			transition: all .2s ease-in-out;
+		}
+
+		.collection-view .collection-details .image-container {
+			flex: 0 0 18%;
+			max-width: 18%;
+			text-align: center;
+			padding-left: 7%;
+			padding-right: 4%;
+		}
+
+		.list-style .collection-list .each-collection .image-container {
+			flex: 0 0 18%;
+			max-width: 18%;
+			text-align: center;
+			padding-left: 7% !important;
+			padding-right: 4% !important;
+		}
+
+		.minimal-style .collection-list .each-collection .image-container {
+			flex: 0 0 18%;
+			max-width: 18%;
+			text-align: center;
+			padding-left: 7% !important;
+			padding-right: 4% !important;
+		}
+
+		.tiles-style .collection-list .each-collection .image-container img {
+			width: 65px;
+			height: auto;
+			margin-bottom: 20px;
+			margin-top: 10px;
+		}
+
+		.each-collection .col {
+			position: relative;
+			width: 100%;
+			padding-right: 15px !important;
+			padding-left: 15px !important;
+		}
+
+		.list-style .collection-list .each-collection .collection-title {
+			color:var(--title-color) !important;
+			margin-bottom: 5px;
+			font-size: var(--title-size) !important;
+		}
+
+		/*.author-profile-image-continer {*/
+		/*	padding-left: 5px;*/
+		/*	vertical-align: middle;*/
+		/*}*/
+
+		.cards-style .collection-list .each-collection {
+			padding: 20px;
+			background: #fff;
+			border: 1px solid #e0e0e0;
+			/* border-radius: 5px; */
+			/* box-shadow: 0 3px 8px 0 rgb(0 0 0 / 3%); */
+			margin-bottom: 30px;
+			/* margin-left: 10px; */
+			/* margin-right: 10px; */
+			cursor: pointer;
+			box-shadow: 0 0 10px #eaf0f6;
+			height: 100%;
+			transition: all .2s ease-in-out;
+			padding-bottom: 70px;
+			position: relative;
+		}
+
+		.minimal-style .collection-list .each-collection {
+			padding: 20px 10px;
+			/* background: #fff; */
+			/* border: 1px solid #e0e0e0; */
+			/* border-radius: 5px; */
+			/* box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.03); */
+			margin-bottom: 30px;
+			/*     margin-left: 10px; */
+			/*     margin-right: 10px; */
+			cursor: pointer;
+			height: 100%;
+			transition: all .2s ease-in-out;
+		}
+
+		.minimal-style .collection-list .each-collection:hover {
+			background: #fcfcfc;
+			box-shadow: 0 10px 15px -5px rgb(51 71 91 / 12%);
+			transform: scale(1.014);
+		}
+
+		.list-style .collection-list .each-collection:hover {
+			box-shadow: 0 10px 15px -5px rgb(51 71 91 / 12%);
+			transform: scale(1.009);
+		}
+
+		.hc-global-title {
+			color: var(--title-color) !important;
+			font-size: var(--title-size) !important;
+			font-weight: 600;
+		}
+
+		.hc-global-heading {
+			color: var(--heading-color) !important;
+			font-size: var(--heading-size) !important;
+			font-weight: 700 !important;
+		}
+
+		.hc-global-description {
+			color: var(--desc-color) !important;
+			font-size: var(--desc-size) !important;
+		}
+
+		.tiles-style .collection-list .each-collection .collection-title {
+			color: var(--title-color) !important;
+			margin-bottom: 10px;
+			font-size: var(--title-size) !important;
+			font-weight: 600;
+		}
+
+		.tiles-style a, .box-style a, .minimal-style a, .list-style a, .builder-article a, .builder-collection a{
+			cursor: inherit !important;
+		}
+</style>

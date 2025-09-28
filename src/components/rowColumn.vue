@@ -6,7 +6,7 @@
 				   v-bind:key="column.id"
 				   :class="['align-self-'+ column.alignItems, viewport == 'mobile' ? 'col-sm-12' : getColumnClassName(column), (checkAnyColumnHasContent(columns)) ? '' :'empty' ]"
 				   :list="column.contents"
-				   :options="{group: {name: 'content', put: true}, sort: true, handle: 'i.content-move'}" @start="onMove"
+				   :options="{group: {name: 'content', put: ['content']}, sort: true, handle: 'i.content-move'}" @start="onMove"
 				   @end="onMoveEnd" ref="column" @add="onAddContent($event, column)"
 				   :style="getSelectedStyles(column.options, {}, ['padding', 'margin', 'border', 'box-shadow', 'background'])">
 
@@ -55,18 +55,17 @@
 </template>
 
 <script>
-import { getBuilderDefaultSettings, getDefaultColumnOptions, landingpageBuilderVueRef } from '../global';
-
+import { getBuilderDefaultSettings, getDefaultColumnOptions } from '../global';
 export default {
   props: ['columns', 'viewport'],
   name: 'rowColumn',
   methods: {
 
     activateSelectedElement: function ($event, editElement, elementType) {
-      landingpageBuilderVueRef.activateSelectedElement($event, editElement, elementType);
+      window.landingpageBuilderVueRef.activateSelectedElement($event, editElement, elementType);
     },
     activateSettingsElement: function ($event, editElement, elementType) {
-      landingpageBuilderVueRef.activateSettingsElement($event, editElement, elementType);
+      window.landingpageBuilderVueRef.activateSettingsElement($event, editElement, elementType);
     },
 
     getContentName(contentType) {
@@ -101,18 +100,18 @@ export default {
       delete refContent["ask_column_confirmation"];
 
       // Show a modal popup
-      landingpageBuilderVueRef.modalPopup.modalType = 'columnConfirmation';
-      landingpageBuilderVueRef.modalPopup.showModal = true;
-      landingpageBuilderVueRef.modalPopup.heading = "Select Columns";
-      landingpageBuilderVueRef.modalPopup.modalData = {
+      window.landingpageBuilderVueRef.modalPopup.modalType = 'columnConfirmation';
+      window.landingpageBuilderVueRef.modalPopup.showModal = true;
+      window.landingpageBuilderVueRef.modalPopup.heading = "Select Columns";
+      window.landingpageBuilderVueRef.modalPopup.modalData = {
         columns: 1
       };
-      landingpageBuilderVueRef.modalPopup.callback = function (data) {
+      window.landingpageBuilderVueRef.modalPopup.callback = function (data) {
 
-        if (landingpageBuilderVueRef.modalPopup.modalData.columns == 1)
+        if (window.landingpageBuilderVueRef.modalPopup.modalData.columns == 1)
           return;
 
-        for (var i = 0; i < landingpageBuilderVueRef.modalPopup.modalData.columns; i++) {
+        for (var i = 0; i < window.landingpageBuilderVueRef.modalPopup.modalData.columns; i++) {
           if (refContent.columns.length < (i + 1))
             refContent.columns.push(getDefaultColumnOptions());
         }
@@ -122,11 +121,11 @@ export default {
     },
 
     cloneContent(event, column, content) {
-      landingpageBuilderVueRef.cloneContent(event, column, content);
+      window.landingpageBuilderVueRef.cloneContent(event, column, content);
     },
 
     removeContent(event, column, remContent) {
-      landingpageBuilderVueRef.removeContent(event, column, remContent)
+      window.landingpageBuilderVueRef.removeContent(event, column, remContent)
     },
 
     getColumnClassName(column, viewport) {
@@ -140,7 +139,7 @@ export default {
 
     activeElementId() {
       try {
-        return landingpageBuilderVueRef.activeElementId;
+        return window.landingpageBuilderVueRef.activeElementId;
       } catch (e) {
         return "";
       }
@@ -148,7 +147,7 @@ export default {
     },
 
     activateSelectedElement(event, content, type) {
-      landingpageBuilderVueRef.activateSelectedElement(event, content, type);
+      window.landingpageBuilderVueRef.activateSelectedElement(event, content, type);
     },
 
     onMove: function () {
@@ -163,7 +162,7 @@ export default {
     },
     onMoveEnd: function () {
 
-      landingpageBuilderVueRef.addState(this.landingpagePrefs);
+      window.landingpageBuilderVueRef.addState(this.landingpagePrefs);
 
       try {
         tinymce.editors.forEach(function (editor) {

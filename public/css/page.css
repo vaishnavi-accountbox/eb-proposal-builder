@@ -1,0 +1,227 @@
+html{
+	height: 100%;
+    min-height: 100%;
+}
+
+body{
+  margin: 0;
+  text-align: left;
+  font-size: 1rem;
+  /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff; */
+  
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  height: 100%;
+  min-height: 100%;
+}
+
+.body-container{
+	flex: 1 0 auto;
+}
+
+.hc-preloader {
+  display: block !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  /* change if the mask should have another color then white */
+  z-index: 99;
+  /* makes sure it stays on top */
+}
+
+.hc-preloader .hc-preloader-img {
+  width: 100%;
+  text-align: center;
+  height: 100px;
+  position: absolute;
+  top: calc(50% - 50px);
+}
+
+/* body .container{
+	padding-left: 0;
+	padding-right: 0;
+} */
+
+.no-border {
+	border: none;
+}
+
+.section-background-video {
+	display: block;
+    position: absolute;
+    right: 0;
+  	bottom: 0;
+  	width: 100%; 
+  	height: 100%;
+  	boder:none;
+}
+
+button{
+	box-shadow: none !important;
+}
+button:hover{
+	box-shadow: none !important;
+	opacity: 0.9;
+}
+
+.engagebay-lp-button{
+	cursor:pointer
+}
+
+.video-modal iframe{
+	min-height: 400px;
+}
+
+.video-modal video{
+	height: 400px;
+}
+
+.video-modal .close{
+   right: 10px;
+    position: absolute;
+    top: 10px;
+    z-index: 9;
+    color: #fff;
+    background: #cac8c8;
+    padding: 4px;
+    opacity: 1;
+}
+
+.carousel{
+	max-width: 100%;
+}
+
+.carousel .carousel-control-prev .chevron, .carousel .carousel-control-next .chevron{
+	font-size: 23px;
+    color: #fff;
+}
+
+.carousel .carousel-control-prev:hover .chevron, .carousel .carousel-control-next:hover .chevron{
+    z-index: .8;
+}
+
+.carousel .carousel-indicators li:hover{
+	 z-index: 1;
+}
+
+@media (max-width:576px){
+	.mobile-visibilty-false{
+	    display: none;
+	}
+}
+
+@media (min-width:576px){
+	.desktop-visibilty-false{
+	    display: none;
+	}
+}
+
+@media (min-width:576px){
+	
+.carousel.thumbnail_top, .carousel.thumbnail_left {
+	padding-bottom: 50px;
+}
+	
+	.carousel .carousel-inner.default .carousel-item{
+	text-align: center;
+}
+
+/* .carousel .carousel-inner.thumbnail_left .carousel-item, .carousel .carousel-inner.thumbnail_top .carousel-item{
+	padding-top: 15px;
+} */
+
+.carousel .carousel-inner.default .carousal-thumbnail{
+	width: auto !important;
+	height: 100% !important;
+	max-width: 100%;
+}
+
+.carousel .carousel-inner.default .carousel-description{
+	position: absolute;
+    right: 15%;
+    bottom: 20px;
+    left: 15%;
+    z-index: 10;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color: #fff;
+    text-align: center;
+}
+
+.carousel .carousel-inner.thumbnail_top .carousel-item{
+	text-align: center;
+}
+
+.carousel .carousel-inner.thumbnail_top .carousel-description {
+	padding-left: 15%;
+    padding-right: 15%;
+}
+
+.carousel .carousel-inner.thumbnail_top .carousel-item .carousal-thumbnail{
+	margin-bottom: 15px;
+	margin-right: auto;
+    margin-left: auto;
+    max-width: 100%;
+}
+
+.carousel .carousel-inner.thumbnail_left .carousel-item.active, .carousel .carousel-inner.thumbnail_left .carousel-item-next, .carousel .carousel-inner.thumbnail_left .carousel-item-prev{
+	padding-left: 15%;
+	padding-right: 15%;
+	display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.carousel .carousel-inner.thumbnail_left .carousel-item .carousal-thumbnail{
+/* 	flex: 0 0 55px; */
+	margin-right: 15px;
+	max-width: 80%;
+}
+
+.carousel .carousel-inner.thumbnail_left .carousel-item .carousel-description{
+	flex-basis: 0;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    max-width: 100%;
+    word-break: break-word; 
+}
+	
+}
+
+@media (max-width:576px){
+	
+	.carousel {
+		padding-bottom: 50px;
+	}
+	
+	.carousel .carousel-inner .carousel-item{
+		text-align: center;
+		display: block;
+		flex: none;
+	}
+	
+	.carousel .carousel-inner .carousel-description {
+		padding-left: 15%;
+	    padding-right: 15%;
+	    position: relative;
+	}
+	
+	.carousel .carousel-inner .carousel-item .carousal-thumbnail{
+		margin-bottom: 15px;
+		margin-right: auto;
+	    margin-left: auto;
+	    max-width: 100%;
+	    height: auto;
+	}
+	
+}
+/* End of Mobile css */
