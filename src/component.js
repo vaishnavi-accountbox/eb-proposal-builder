@@ -8,7 +8,6 @@ import RowColumn from './components/rowColumn.vue';
 import SearchTemplate from './components/searchTemplate.vue';
 import Heading3Template from './components/heading3Template.vue';
 import BuilderHtmlContent from './components/builderHtmlContent.vue';
-import { utils } from './app';
 import StyleEditFormFields from './components/styleEditFormFields.vue';
 import FontStyleSettings from './components/fontStyleSettings.vue';
 import HtmlTemplate from './components/htmlTemplate.vue';
@@ -29,6 +28,14 @@ import Minimal from './components/minimal.vue';
 import Tiles from './components/tiles.vue';
 import CollectionComponent from './components/collectionComponent.vue';
 import ArticleComponent from './components/articleComponent.vue';
+import VideoRenderOptions from './components/videoRenderOptions.vue';
+import CarousalTemplate from './components/carousalTemplate.vue';
+import VerticaldividerTemplate from './components/verticaldividerTemplate.vue';
+import DividerTemplate from './components/dividerTemplate.vue';
+import SocialTemplate from './components/socialTemplate.vue';
+import ImageTemplate from './components/imageTemplate.vue';
+import BlockTemplate from './components/blockTemplate.vue';
+import RepositoryImageFiles from './components/repositoryImageFiles.vue';
 var ENGAGEBAY_VIDEO_TEMPLATE_JSON;
 Vue.component('engagebay-video-templates', {
     props: ['videooptions', 'sele'],
@@ -169,192 +176,7 @@ Vue.component('engagebay-popup-list', {
 
 })
 
-Vue.component('repository-image-files', {
-    props: ['option', 'fileurlkeyname', 'modalid', 'contentid', 'allowscaling'],
-    data: function () {
-        return {
-            repolist: [],
-            loading: true,
-            newfile: undefined,
-            fileuploadinginprogress: false,
-            imageselected: false,
-            selectedURL: "",
-            desktop: {width: ''},
-            mobile: {width: ''},
-            dummyid: utils.uid()
-        }
-    },
-    template: "#repositoryImageFiles",
-    methods: {
-
-        imageSelectedFromList(url) {
-
-            this.selectedURL = url;
-            this.imageselected = true;
-            if (!this.allowscaling) {
-                this.option[this.fileurlkeyname] = this.selectedURL;
-
-                this.$emit('closepopup');
-
-                $('#' + this.modalid).find('.modal-close').trigger('click');
-
-                landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
-
-            }
-
-        },
-
-        useImageFullsize() {
-
-            var self = this;
-
-            this.option[this.fileurlkeyname] = this.selectedURL;
-
-            $('#' + this.modalid).find('.modal-close').trigger('click');
-
-            var img = new Image();
-            img.onload = function () {
-
-                self.option['desktop'].width = this.width;
-                self.option['mobile'].width = this.width;
-                self.option['desktop'].height = this.height;
-                self.option['mobile'].height = this.height;
-
-                try {
-                    if (self.contentid) {
-                        var sectionId = $('#' + self.contentid).attr('data-sectionid');
-                        var section = landingpageBuilderVueRef.landingpagePrefs.sections.find(function (
-                            sect) {
-                            return sect.id == sectionId;
-                        });
-
-                        if (!section)
-                            return;
-
-                        var contentNewDesktopHeight = parseNumber(self.option['desktop'].height) + parseNumber(self.option['desktop'].top);
-                        if (parseNumber(section.options['desktop'].height) < contentNewDesktopHeight) {
-                            section.options['desktop'].height = contentNewDesktopHeight
-                        }
-
-                        var contentNewMobileHeight = parseNumber(self.option['mobile'].height) + parseNumber(self.option['mobile'].top);
-                        if (parseNumber(section.options['mobile'].height) < contentNewMobileHeight) {
-                            section.options['mobile'].height = contentNewMobileHeight
-                        }
-
-                        landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
-                    }
-                } catch (e) {
-                }
-
-            }
-            img.src = this.selectedURL;
-
-        },
-
-        fitImagesize(event) {
-
-            this.option[this.fileurlkeyname] = this.selectedURL;
-            $('#' + this.modalid).find('.modal-close').trigger('click');
-
-            var self = this;
-
-            if (self['desktop'].width)
-                self.option['desktop'].width = self['desktop'].width;
-
-            if (self['mobile'].width)
-                self.option['mobile'].width = self["mobile"].width;
-
-            landingpageBuilderVueRef.addState(landingpageBuilderVueRef.landingpagePrefs);
-
-
-            /*
-             * var img = new Image(); img.src = this.selectedURL; img.onload =
-             * function() {
-             *
-             * var height = this.height, width = this.width;
-             *
-             * var desktopWidth = width, mobileWidth = width;
-             *
-             * if(self['desktop'].width && self['desktop'].width < width)
-             * desktopWidth = self['desktop'].width;
-             *
-             * if(self['mobile'].width && self['mobile'].width < width)
-             * mobileWidth = self['mobile'].width;
-             *
-             * self.option['desktop'].width = desktopWidth;
-             * self.option['mobile'].width = mobileWidth;
-             *  }
-             */
-
-        },
-
-        updatecontentSize($event, viewport) {
-            var $ev = $(event.target);
-            var self = this;
-            setTimeout(function () {
-                self[viewport].width = $ev.width();
-            }, 200);
-        },
-
-        newFileUploaded() {
-
-            var fileJSON = JSON.parse(this.newfile);
-
-            fileuploadinginprogress = true;
-
-            var data = {};
-            data.title = fileJSON.file_name + '-' + new Date().toJSON();
-            data.files = JSON.stringify({
-                'file1': {
-                    'name': fileJSON.file_name,
-                    'url': fileJSON.file_url,
-                    'size': fileJSON.file_size,
-                    'extension': fileJSON.file_extension,
-                }
-            });
-
-            var self = this;
-
-            $.ajax({
-                type: "POST",
-                url: "/rest/api/panel/contentbox/repo",
-                data: JSON.stringify(data),
-                // dataType : 'json',
-                contentType: "application/json",
-                success: function (data) {
-                    self.fileuploadinginprogress = false;
-
-                    self.imageSelectedFromList(fileJSON.file_url);
-
-                },
-                error: function (error) {
-                    utils.notify((error && error.responseText) ? error.responseText : error).error();
-                    return;
-                }
-            })
-
-        }
-
-    },
-
-    mounted: function () {
-
-        var self = this;
-        $.ajax({
-            type: "GET",
-            url: "/rest/api/panel/contentbox/repo?page_size=2000&sort_key=-created_time&file_type=png,jpg,jpeg,bmp,svg,gif",
-            dataType: 'json',
-            contentType: "application/json",
-            success: function (data) {
-                self.loading = false;
-                self.repolist = data;
-            }
-        })
-
-
-    }
-
-})
+Vue.component('repository-image-files', RepositoryImageFiles)
 
 
 /*
@@ -443,35 +265,17 @@ Vue.component('content-common-settings', {
 
 Vue.component('builder-html-content', BuilderHtmlContent);
 
-Vue.component("blockTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentBlockTemplate',
-    methods: {}
-});
+Vue.component("blockTemplate", BlockTemplate);
 
-Vue.component("imageTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentImageTemplate',
-    methods: {}
-});
+Vue.component("imageTemplate", ImageTemplate);
 
 Vue.component("iconTemplate", iconTemplate);
 
-Vue.component("socialTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentSocialTemplate',
-    methods: {}
-});
+Vue.component("socialTemplate", SocialTemplate);
 
-Vue.component("dividerTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentDividerTemplate'
-});
+Vue.component("dividerTemplate", DividerTemplate);
 
-Vue.component("verticaldividerTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentVerticalDividerTemplate'
-});
+Vue.component("verticaldividerTemplate", VerticaldividerTemplate);
 
 Vue.component("textTemplate", TextTemplate);
 
@@ -504,205 +308,7 @@ Vue.component("navlistTemplate", NavlistTemplate);
 
 Vue.component("searchTemplate", SearchTemplate);
 
-Vue.component("carousalTemplate", {
-    props: ['content', 'viewport', 'renderby'],
-    template: '#contentCarousalTemplate',
-    methods: {
-
-        getInterval(sec) {
-            try {
-                return Number(sec) * 1000;
-            } catch (e) {
-                return 5000;
-            }
-        },
-
-        isActive(items, index) {
-
-            var foundActive = false, isActive = false;
-            for (var i = 0; i < items.length; i++) {
-
-                if (items[i] && items[i].is_active)
-                    foundActive = true;
-
-                if (items[i] && items[i].is_active && i == index)
-                    isActive = true;
-            }
-
-            if (!foundActive && !isActive && index == 0) {
-                items[0].is_active = true;
-                isActive = true;
-            }
-
-            return isActive;
-        }
-    }
-});
-
-Vue.component("style-click-action", {
-    props: ['clickaction'],
-    template: '#styleClickActionTemplate',
-    methods: {
-        getPageSection: function () {
-            return landingpageBuilderVueRef.landingpagePrefs.sections;
-        },
-    }
-});
-
-Vue.component('navlink-style-settings', {
-    props: ['navlist'],
-    template: "#navlinkStyleSettingsTemplate",
-    methods: {
-
-        removeButton(event, index, navlist) {
-            event.preventDefault();
-            console.log('index', index);
-            navlist.splice(index, 1);
-
-        },
-
-        cloneButton(event, button) {
-
-            event.preventDefault();
-
-            this.navlist.splice(this.navlist
-                .indexOf(button) + 1, 0, $.extend(true, {}, button));
-
-        },
-
-        removeDropdownItem(event, dropdownList, index) {
-            event.preventDefault();
-            dropdownList.splice(index, 1);
-        },
-
-        addNewNavbarLink(event) {
-            event.preventDefault();
-            this.navlist.push({
-                dropdown: false,
-                text: 'Home',
-                clickAction: {},
-                dropdownList: []
-            });
-        },
-
-        addNewDropdownItem(event, list) {
-            event.preventDefault();
-            list.push({
-                text: 'Home',
-                clickAction: {}
-            });
-        }
-
-    }
-
-});
-
-Vue.component('carousal-style-settings', {
-    props: ['list'],
-    template: "#carousalStyleSettingsTemplate",
-    data: function () {
-        return {
-            showCarousalImagePopup: false,
-            carousalSelectedIndex: undefined
-        }
-    },
-    methods: {
-
-        updateAciveStatus(event, item) {
-
-            event.preventDefault();
-
-            this.list.forEach(function (item) {
-                item.is_active = false;
-            });
-
-            item.is_active = true;
-
-        },
-
-        removeItem(event, index) {
-            event.preventDefault();
-            this.list.splice(index, 1);
-        },
-
-        cloneItem(event, item) {
-
-            event.preventDefault();
-
-            this.list.splice(this.list
-                .indexOf(item) + 1, 0, $.extend(true, {}, item));
-
-        },
-
-        addNewItem(event) {
-            event.preventDefault();
-
-            this.list.forEach(function (item) {
-                item.is_active = false;
-            });
-
-            this.list.push(getCarousalDefaultItem());
-
-        }
-
-    }
-
-});
-
-Vue.component("video-render-options", {
-    props: ['video_options', 'renderby'],
-    template: '#videoRenderOptionsTemplate',
-    data: function () {
-        return {
-            dummyid: utils.uid()
-        }
-    },
-    methods: {
-
-        getVideoType() {
-            var videoSubtype = this.video_options.url.split('.').slice(-1)[0];
-
-            if (!videoSubtype || videoSubtype.indexOf("x-matroska") > -1)
-                return "video/webm";
-
-            return "video/" + videoSubtype;
-        },
-
-        getIframeVideoSrcURL(inzoomview) {
-
-            if (this.renderby == 'builder' || (this.video_options.zoom_video && !inzoomview)) {
-
-                if (this.video_options.type == 'youtube')
-                    // return '//www.youtube.com/embed/'+
-                    // this.video_options.url +
-                    // '?mute=1&autoplay=0&showinfo=0&controls=0';
-                    return '//www.youtube.com/embed/' + this.video_options.url + '?mute=1&rel=0&loop=0&modestbranding=1&showinfo=0&controls=0&iv_load_policy=3&autohide=1&autoplay=0&disablekb=1&fs=0&html5=1&enablejsapi=1';
-
-                else if (this.video_options.type == 'vimeo')
-                    return 'https://player.vimeo.com/video/' + this.video_options.url + '?transparent=false';
-
-            } else {
-
-                var loop = (this.video_options.loop) ? 1 : 0;
-                var autoplay = (this.video_options.auto_play) ? 1 : 0;
-                var muted = (this.video_options.muted) ? 1 : 0;
-
-                if (this.video_options.type == 'youtube' && this.video_options.loop)
-                    // return '//www.youtube.com/embed/'+
-                    // this.video_options.url +
-                    // '?mute=1&autoplay=0&showinfo=0&controls=0';
-                    return '//www.youtube.com/embed/' + this.video_options.url + '?playlist=' + this.video_options.url + '&mute=' + muted + '&rel=0&loop=' + loop + '&modestbranding=1&showinfo=0&controls=1&iv_load_policy=3&autohide=1&autoplay=' + autoplay + '&disablekb=1&fs=1&html5=1&enablejsapi=1';
-
-                else if (this.video_options.type == 'youtube')
-                    return '//www.youtube.com/embed/' + this.video_options.url + '?mute=' + muted + '&rel=0&loop=' + loop + '&modestbranding=1&showinfo=0&controls=1&iv_load_policy=3&autohide=1&autoplay=' + autoplay + '&disablekb=1&fs=1&html5=1&enablejsapi=1';
-
-                else if (this.video_options.type == 'vimeo')
-                    return 'https://player.vimeo.com/video/' + this.video_options.url + '?transparent=0&background=0&muted=' + muted + '&autoplay=' + autoplay + '&loop=' + loop + '&badge=0&byline=0&title=0&portrait=0&controls=1';
-
-            }
+Vue.component("carousalTemplate", CarousalTemplate);
 
 
-        }
-
-    }
-});
+Vue.component("video-render-options", VideoRenderOptions);

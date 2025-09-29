@@ -959,7 +959,7 @@ Vue
 		});
 
 
-function parseNumber(str){
+export function parseNumber(str){
 	try {
 		return Number(str);
 	} catch (e) {
