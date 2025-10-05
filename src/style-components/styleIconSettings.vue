@@ -19,7 +19,7 @@
 											<span class="icon cursor-move"><i class="move-section fa fa-arrows"></i></span>
 										</div>
 										<div class="col no-gutter p-0">
-											<span><i class="fa" :class=['fa-'+icon.icon_class]></i></span>
+											<span><i class="fa" :class="['fa-'+icon.icon_class]"></i></span>
 										</div>
 										<div class="col text-right no-gutter p-0" style="max-width: 50px;">
 											<span class="cursor-pointer pl-1" @click="removeIcon($event, index)"><i class="fa fa-remove" title="Remove Icon" style="display: inline;"></i> </span>
