@@ -36,6 +36,7 @@ import SocialTemplate from './components/socialTemplate.vue';
 import ImageTemplate from './components/imageTemplate.vue';
 import BlockTemplate from './components/blockTemplate.vue';
 import RepositoryImageFiles from './components/repositoryImageFiles.vue';
+import ProductComponent from './components/productComponent.vue';
 var ENGAGEBAY_VIDEO_TEMPLATE_JSON;
 Vue.component('engagebay-video-templates', {
     props: ['videooptions', 'sele'],
@@ -206,6 +207,7 @@ Vue.component('minimal', Minimal)
 Vue.component('tiles', Tiles)
 
 Vue.component('box', Box)
+Vue.component('product-component', ProductComponent)
 
 Vue.component('collection-component', CollectionComponent)
 

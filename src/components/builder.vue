@@ -411,7 +411,7 @@
 
 													<template v-if="section.type=='collection_section'">
 
-														<div :class="[getContainerClass(landingpagePrefs.bodySettings.contentWidth)]"
+														<!-- <div :class="[getContainerClass(landingpagePrefs.bodySettings.contentWidth)]"
 															 @click="activateSelectedElement($event, section, 'section')"
 															 :style="getSelectedStyles(section.options, {}, ['padding'])">
 															<collection-list
@@ -444,7 +444,15 @@
 															</article-component>
 
 
-														</div>
+														</div> -->
+														<product-component
+																:font="landingpagePrefs.bodySettings.font"
+																:bodycontent="landingpagePrefs.bodyContent"
+																:productpagestyle="landingpagePrefs.bodySettings.themeSettings.productPageStyle"
+																
+														>
+															<!-- Product Component Content -->
+														</product-component>
 
 <!--														<div class="article-section-overlay" style="">-->
 <!--															<div class="row" style="height: 100%;">-->
